@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLight — Интерактивная мебель будущего</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 25px 0;
+            transition: all 0.4s ease;
+        }
+
+        header.scrolled {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 50px;
+        }
+
+        .nav-links a {
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.85);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #ffffff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(3px) brightness(0.4);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(0, 0, 0, 0.6) 0%,
+                rgba(0, 0, 0, 0.3) 50%,
+                rgba(0, 0, 0, 0.5) 100%
+            );
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            opacity: 0;
+            animation: fadeIn 1.5s ease forwards;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(4rem, 12vw, 9rem);
+            font-weight: 400;
+            line-height: 0.95;
+            letter-spacing: -2px;
+            margin-bottom: 35px;
+            color: #ffffff;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 450px;
+            line-height: 1.8;
+            margin-bottom: 50px;
+        }
+
+        .btn-cta {
+            display: inline-block;
+            padding: 18px 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #ffffff;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .btn-cta:hover {
+            background: #ffffff;
+            color: #1a1a1a;
+            border-color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 255, 255, 0.15);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 1.2s;
+        }
+
+        .scroll-indicator span {
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .scroll-indicator .line {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.6),
+                transparent
+            );
+            animation: scrollLine 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollLine {
+            0%, 100% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scaleY(0.5);
+                opacity: 0.5;
+            }
+        }
+
+        .products-section {
+            background: #0a0a0a;
+            padding: 120px 0 100px;
+            overflow: hidden;
+        }
+
+        .products-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .products-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 400;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .products-header h2 span {
+            color: #d4a853;
+        }
+
+        .products-header p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1200px;
+        }
+
+        .carousel-track {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .product-card {
+            flex-shrink: 0;
+            width: 320px;
+            height: 420px;
+            background: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            border: 1px solid rgba(212, 168, 83, 0.15);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #d4a853, #8b6914);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-card.active {
+            width: 380px;
+            height: 480px;
+            box-shadow: 0 30px 60px rgba(212, 168, 83, 0.15);
+            border-color: rgba(212, 168, 83, 0.4);
+        }
+
+        .product-card.active::before {
+            opacity: 1;
+        }
+
+        .product-card.side {
+            opacity: 0.5;
+            transform: scale(0.8);
+        }
+
+        .product-card.side:hover {
+            opacity: 0.7;
+            transform: scale(0.85);
+        }
+
+        .product-card.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 260px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-card.active .product-image {
+            height: 300px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #d4a853, #8b6914);
+            color: #0a0a0a;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .product-info {
+            padding: 25px 30px;
+        }
+
+        .product-card.active .product-info {
+            padding: 30px 35px;
+        }
+
+        .product-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .product-card.active .product-name {
+            font-size: 1.6rem;
+        }
+
+        .product-description {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.55);
+            line-height: 1.6;
+        }
+
+        .product-price {
+            display: inline-block;
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #d4a853;
+        }
+
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 50px;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .nav-dot:hover {
+            background: rgba(212, 168, 83, 0.5);
+        }
+
+        .nav-dot.active {
+            background: #d4a853;
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(212, 168, 83, 0.5);
+        }
+
+        .carousel-hint {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 992px) {
+            .nav-links {
+                gap: 30px;
+            }
+
+            .hero-title {
+                font-size: clamp(3rem, 10vw, 6rem);
+            }
+
+            .carousel-container {
+                height: 450px;
+            }
+
+            .product-card {
+                width: 280px;
+                height: 380px;
+            }
+
+            .product-card.active {
+                width: 320px;
+                height: 420px;
+            }
+
+            .product-image {
+                height: 220px;
+            }
+
+            .product-card.active .product-image {
+                height: 260px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 25px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero-content {
+                text-align: left;
+            }
+
+            .hero-title {
+                font-size: clamp(2.8rem, 12vw, 5rem);
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .btn-cta {
+                padding: 15px 40px;
+                font-size: 0.8rem;
+            }
+
+            .products-section {
+                padding: 80px 0 60px;
+            }
+
+            .products-header {
+                margin-bottom: 50px;
+            }
+
+            .carousel-container {
+                height: 400px;
+            }
+
+            .carousel-track {
+                gap: 15px;
+            }
+
+            .product-card {
+                width: 240px;
+                height: 340px;
+            }
+
+            .product-card.active {
+                width: 280px;
+                height: 370px;
+            }
+
+            .product-card.side {
+                transform: scale(0.75);
+            }
+
+            .product-image {
+                height: 190px;
+            }
+
+            .product-card.active .product-image {
+                height: 220px;
+            }
+
+            .product-info {
+                padding: 20px;
+            }
+
+            .product-name {
+                font-size: 1.2rem;
+            }
+
+            .product-card.active .product-name {
+                font-size: 1.4rem;
+            }
+
+            .product-description {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: clamp(2.5rem, 14vw, 4rem);
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+                margin-bottom: 35px;
+            }
+
+            .carousel-container {
+                height: 380px;
+            }
+
+            .carousel-track {
+                gap: 10px;
+            }
+
+            .product-card {
+                width: 200px;
+                height: 310px;
+            }
+
+            .product-card.active {
+                width: 230px;
+                height: 340px;
+            }
+
+            .product-card.side {
+                transform: scale(0.7);
+            }
+
+            .product-image {
+                height: 170px;
+            }
+
+            .product-card.active .product-image {
+                height: 200px;
+            }
+
+            .product-info {
+                padding: 15px 18px;
+            }
+
+            .product-name {
+                font-size: 1.1rem;
+            }
+
+            .product-card.active .product-name {
+                font-size: 1.25rem;
+            }
+
+            .product-description {
+                font-size: 0.8rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .product-price {
+                font-size: 1rem;
+            }
+
+            .nav-dot {
+                width: 10px;
+                height: 10px;
+            }
+        }
+
+        .footer {
+            background: #0a0a0a;
+            padding: 80px 0 40px;
+            color: #ffffff;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #ffffff;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .footer-brand p {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.7;
+            max-width: 280px;
+        }
+
+        .footer-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #d4a853;
+            letter-spacing: 1px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .footer-links a {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #d4a853;
+        }
+
+        .footer-contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .footer-contact-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .contact-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(212, 168, 83, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .contact-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: #d4a853;
+        }
+
+        .contact-text {
+            padding-top: 3px;
+        }
+
+        .contact-label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .contact-value {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .contact-value a {
+            transition: color 0.3s ease;
+        }
+
+        .contact-value a:hover {
+            color: #d4a853;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .social-link {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: #d4a853;
+            transform: translateY(-3px);
+        }
+
+        .social-link svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+        }
+
+        .social-link:hover svg {
+            fill: #0a0a0a;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-bottom p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .footer-bottom-links a {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            transition: color 0.3s ease;
+        }
+
+        .footer-bottom-links a:hover {
+            color: #d4a853;
+        }
+
+        .footer-payments {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .payment-icon {
+            width: 50px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        .footer-hours {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .footer-hours p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+
+        .footer-hours span {
+            color: #d4a853;
+            font-weight: 500;
+        }
+
+        .footer-newsletter {
+            margin-top: 25px;
+        }
+
+        .newsletter-title {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 12px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .newsletter-input:focus {
+            border-color: #d4a853;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .newsletter-btn {
+            padding: 12px 18px;
+            background: linear-gradient(135deg, #d4a853, #8b6914);
+            border: none;
+            border-radius: 10px;
+            color: #0a0a0a;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 168, 83, 0.3);
+        }
+
+        .footer-cert {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(212, 168, 83, 0.08);
+            border-radius: 10px;
+            border: 1px solid rgba(212, 168, 83, 0.15);
+        }
+
+        .cert-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(212, 168, 83, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cert-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: #d4a853;
+        }
+
+        .cert-text p:first-child {
+            font-size: 0.9rem;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .cert-text p:last-child {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 2px;
+        }
+
+        @media (max-width: 992px) {
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 40px;
+            }
+
+            .footer-brand {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .footer {
+                padding: 60px 0 30px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .footer-brand {
+                grid-column: span 1;
+            }
+
+            .footer-brand p {
+                max-width: 100%;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .footer-bottom-links {
+                gap: 20px;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .newsletter-btn {
+                width: 100%;
+            }
+        }
+
+        .about-section {
+            background: #f8f7f5;
+            color: #1a1a1a;
+            padding: 120px 0 100px;
+        }
+
+        .gallery-section {
+            background: #0a0a0a;
+            padding: 120px 0 100px;
+            color: #ffffff;
+        }
+
+        .gallery-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .gallery-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 400;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .gallery-header p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .about-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 400;
+            margin-bottom: 25px;
+            color: #1a1a1a;
+        }
+
+        .about-intro {
+            font-size: 1.15rem;
+            color: #555;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 100px;
+        }
+
+        .advantage-card {
+            background: #ffffff;
+            padding: 35px 25px;
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .advantage-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .advantage-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .advantage-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .advantage-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .advantage-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+
+        .advantage-card p {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .process-section {
+            padding-top: 60px;
+        }
+
+        .process-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 400;
+            text-align: center;
+            margin-bottom: 70px;
+            color: #1a1a1a;
+        }
+
+        .process-timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .process-timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background: linear-gradient(to bottom, #d4a853, #8b6914);
+            transform: translateX(-50%);
+        }
+
+        .process-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 60px;
+            opacity: 0;
+            transition: all 0.8s ease;
+        }
+
+        .process-item.visible {
+            opacity: 1;
+        }
+
+        .process-item.left {
+            flex-direction: row;
+            justify-content: flex-start;
+            padding-right: calc(50% + 40px);
+        }
+
+        .process-item.right {
+            flex-direction: row-reverse;
+            justify-content: flex-start;
+            padding-left: calc(50% + 40px);
+        }
+
+        .process-image {
+            flex-shrink: 0;
+            width: 280px;
+            height: 200px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .process-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .process-item:hover .process-image img {
+            transform: scale(1.08);
+        }
+
+        .process-content {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .process-content::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 10px solid transparent;
+        }
+
+        .process-item.left .process-content::after {
+            right: -20px;
+            border-left-color: #ffffff;
+        }
+
+        .process-item.right .process-content::after {
+            left: -20px;
+            border-right-color: #ffffff;
+        }
+
+        .process-number {
+            display: inline-block;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #d4a853;
+            margin-bottom: 10px;
+        }
+
+        .process-content h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+
+        .process-content p {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 992px) {
+            .advantages-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .process-timeline::before {
+                left: 20px;
+            }
+
+            .process-item.left,
+            .process-item.right {
+                flex-direction: column;
+                padding-right: 0;
+                padding-left: 60px;
+                align-items: flex-start;
+            }
+
+            .process-image {
+                width: 100%;
+                height: 180px;
+            }
+
+            .process-content::after {
+                top: -20px;
+                left: 50%;
+                transform: translateX(-50%);
+                border: 10px solid transparent;
+            }
+
+            .process-item.left .process-content::after,
+            .process-item.right .process-content::after {
+                bottom: auto;
+                right: auto;
+                border-bottom-color: #ffffff;
+            }
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 250px);
+            gap: 20px;
+            margin-top: 60px;
+        }
+
+        .gallery-item {
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .gallery-item:nth-child(1) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to top,
+                rgba(0, 0, 0, 0.5) 0%,
+                transparent 50%
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .gallery-item:hover::before {
+            opacity: 1;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: auto;
+                gap: 15px;
+            }
+
+            .gallery-item:nth-child(1) {
+                grid-column: span 2;
+                grid-row: span 1;
+            }
+
+            .gallery-item {
+                height: 200px;
+            }
+
+            .gallery-item:nth-child(1) {
+                height: 280px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-item:nth-child(1) {
+                grid-column: span 1;
+                height: 250px;
+            }
+
+            .gallery-item {
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .about-section {
+                padding: 80px 0 60px;
+            }
+
+            .about-header {
+                margin-bottom: 50px;
+            }
+
+            .advantages-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                margin-bottom: 70px;
+            }
+
+            .advantage-card {
+                padding: 25px 20px;
+            }
+
+            .advantage-icon {
+                width: 60px;
+                height: 60px;
+            }
+
+            .process-section {
+                padding-top: 40px;
+            }
+
+            .process-title {
+                margin-bottom: 50px;
+            }
+
+            .process-item {
+                margin-bottom: 40px;
+            }
+
+            .process-image {
+                height: 150px;
+            }
+
+            .process-content {
+                padding: 20px;
+            }
+
+            .process-number {
+                font-size: 2rem;
+            }
+
+            .process-content h4 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">SmartLight</a>
+                <ul class="nav-links">
+                    <li><a href="#hero">Главная</a></li>
+                    <li><a href="#features">Преимущества</a></li>
+                    <li><a href="#products">Продукция</a></li>
+                    <li><a href="#about">О компании</a></li>
+                    <li><a href="#gallery">Галерея</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" id="hero">
+        <div class="hero-bg">
+            <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1920&q=80" alt="Интерактивная мебель будущего">
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">SmartLight</h1>
+                <p class="hero-subtitle">Мы выпускаем интерактивную мебель — мебель будущего</p>
+                <a href="#products" class="btn-cta">Смотреть каталог</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Листайте</span>
+            <div class="line"></div>
+        </div>
+    </section>
+
+    <section class="products-section" id="products">
+        <div class="container">
+            <div class="products-header">
+                <h2>Наша <span>продукция</span></h2>
+                <p>Откройте для себя коллекцию интерактивной мебели, созданной для вашего комфорта</p>
+            </div>
+
+            <div class="carousel-container">
+                <div class="carousel-track" id="carouselTrack">
+                    <div class="product-card" data-index="0">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80" alt="Умный диван Lumina" onerror="this.src='https://images.pexels.com/photos/276583/pexels-photo-276583.jpeg?auto=compress&w=600'">
+                            <span class="product-badge">Хит</span>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">Умный диван Lumina</h3>
+                            <p class="product-description">Интерактивная обивка с регулируемой подсветкой и встроенными датчиками осанки</p>
+                            <span class="product-price">₽189 000</span>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-index="1">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=600&q=80" alt="Стол Mosaic Smart" onerror="this.src='https://images.pexels.com/photos/1006293/pexels-photo-1006293.jpeg?auto=compress&w=600'">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">Стол Mosaic Smart</h3>
+                            <p class="product-description">Рабочая поверхность с беспроводной зарядкой и сенсорным управлением</p>
+                            <span class="product-price">₽78 500</span>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-index="2">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=600&q=80" alt="Кресло Aero Relax" onerror="this.src='https://images.pexels.com/photos/1152557/pexels-photo-1152557.jpeg?auto=compress&w=600'">
+                            <span class="product-badge">Новинка</span>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">Кресло Aero Relax</h3>
+                            <p class="product-description">Эргономичное кресло с массажными функциями и адаптивной поддержкой</p>
+                            <span class="product-price">₽95 200</span>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-index="3">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=600&q=80" alt="Шкаф Infinity" onerror="this.src='https://images.pexels.com/photos/1090638/pexels-photo-1090638.jpeg?auto=compress&w=600'">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">Шкаф Infinity</h3>
+                            <p class="product-description">Система хранения с автоматическим открыванием и климат-контролем</p>
+                            <span class="product-price">₽142 000</span>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-index="4">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&q=80" alt="Кровать Nebula Dream" onerror="this.src='https://images.pexels.com/photos/1520693/pexels-photo-1520693.jpeg?auto=compress&w=600'">
+                            <span class="product-badge">Premium</span>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">Кровать Nebula Dream</h3>
+                            <p class="product-description">Ортопедическое основание с подогревом и встроенным будильником</p>
+                            <span class="product-price">₽215 000</span>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-index="5">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1594026112284-02bb6f3352fe?w=600&q=80" alt="Полка Arc Wall" onerror="this.src='https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&w=600'">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">Полка Arc Wall</h3>
+                            <p class="product-description">Модульная настенная система с LED-подсветкой и скрытым крепежом</p>
+                            <span class="product-price">₽34 800</span>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-index="6">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=600&q=80" alt="Тумба Cloud Side" onerror="this.src='https://images.pexels.com/photos/1648768/pexels-photo-1648768.jpeg?auto=compress&w=600'">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">Тумба Cloud Side</h3>
+                            <p class="product-description">Прикроватная тумба с беспроводной зарядкой и мягким ночным светом</p>
+                            <span class="product-price">₽28 500</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-nav" id="carouselNav"></div>
+            <p class="carousel-hint">Используйте колесико мыши для прокрутки</p>
+        </div>
+    </section>
+
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="about-header">
+                <h2>О компании</h2>
+                <p class="about-intro">SmartLight — российский производитель интерактивной мебели нового поколения. Мы создаём решения, которые делают пространство умнее, а жизнь — комфортнее.</p>
+            </div>
+
+            <div class="advantages-grid">
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&q=80" alt="Современные технологии" onerror="this.src='https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&w=200'">
+                    </div>
+                    <h3>Современные технологии</h3>
+                    <p>Используем передовые решения в области IoT и автоматизации для создания по-настоящему умной мебели</p>
+                </div>
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <img src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=200&q=80" alt="Российское производство" onerror="this.src='https://images.pexels.com/photos/4482906/pexels-photo-4482906.jpeg?auto=compress&w=200'">
+                    </div>
+                    <h3>Российское производство</h3>
+                    <p>Полный цикл производства на территории России с контролем качества на каждом этапе</p>
+                </div>
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80" alt="Индивидуальный подход" onerror="this.src='https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&w=200'">
+                    </div>
+                    <h3>Индивидуальный подход</h3>
+                    <p>Изготавливаем мебель по индивидуальным размерам и с учётом ваших потребностей</p>
+                </div>
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <img src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=200&q=80" alt="Гарантия качества" onerror="this.src='https://images.pexels.com/photos/4050291/pexels-photo-4050291.jpeg?auto=compress&w=200'">
+                    </div>
+                    <h3>Гарантия 5 лет</h3>
+                    <p>Уверены в качестве нашей продукции и предоставляем расширенную гарантию</p>
+                </div>
+            </div>
+
+            <div class="process-section">
+                <h3 class="process-title">Этапы производства</h3>
+                <div class="process-timeline">
+                    <div class="process-item left">
+                        <div class="process-image">
+                            <img src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=400&q=80" alt="Проектирование" onerror="this.src='https://images.pexels.com/photos/4482906/pexels-photo-4482906.jpeg?auto=compress&w=400'">
+                        </div>
+                        <div class="process-content">
+                            <span class="process-number">01</span>
+                            <h4>Проектирование</h4>
+                            <p>Разработка уникального дизайна и технической документации с учётом всех пожеланий клиента</p>
+                        </div>
+                    </div>
+                    <div class="process-item right">
+                        <div class="process-image">
+                            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80" alt="Подбор материалов" onerror="this.src='https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&w=400'">
+                        </div>
+                        <div class="process-content">
+                            <span class="process-number">02</span>
+                            <h4>Подбор материалов</h4>
+                            <p>Тщательный выбор экологичных и долговечных материалов от проверенных поставщиков</p>
+                        </div>
+                    </div>
+                    <div class="process-item left">
+                        <div class="process-image">
+                            <img src="https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=400&q=80" alt="Изготовление" onerror="this.src='https://images.pexels.com/photos/1082271/pexels-photo-1082271.jpeg?auto=compress&w=400'">
+                        </div>
+                        <div class="process-content">
+                            <span class="process-number">03</span>
+                            <h4>Изготовление</h4>
+                            <p>Производство деталей на современном оборудовании с числовым программным управлением</p>
+                        </div>
+                    </div>
+                    <div class="process-item right">
+                        <div class="process-image">
+                            <img src="https://images.unsplash.com/photo-1537519646099-335112f03225?w=400&q=80" alt="Сборка и тестирование" onerror="this.src='https://images.pexels.com/photos/3912933/pexels-photo-3912933.jpeg?auto=compress&w=400'">
+                        </div>
+                        <div class="process-content">
+                            <span class="process-number">04</span>
+                            <h4>Сборка и тестирование</h4>
+                            <p>Финальная сборка и комплексное тестирование всех интерактивных функций</p>
+                        </div>
+                    </div>
+                    <div class="process-item left">
+                        <div class="process-image">
+                            <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=400&q=80" alt="Доставка и установка" onerror="this.src='https://images.pexels.com/photos/4219862/pexels-photo-4219862.jpeg?auto=compress&w=400'">
+                        </div>
+                        <div class="process-content">
+                            <span class="process-number">05</span>
+                            <h4>Доставка и установка</h4>
+                            <p>Бережная транспортировка и профессиональный монтаж с гарантийным обслуживанием</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="gallery-section" id="gallery">
+        <div class="container">
+            <div class="gallery-header">
+                <h2>Галерея работ</h2>
+                <p>Посмотрите примеры наших проектов в интерьерах</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80" alt="Гостиная с интерактивной мебелью SmartLight" onerror="this.src='https://images.pexels.com/photos/276583/pexels-photo-276583.jpeg?auto=compress&w=800'">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80" alt="Современная спальня" onerror="this.src='https://images.pexels.com/photos/1648776/pexels-photo-1648776.jpeg?auto=compress&w=600'">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&q=80" alt="Умная кухня" onerror="this.src='https://images.pexels.com/photos/1082271/pexels-photo-1082271.jpeg?auto=compress&w=600'">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80" alt="Рабочий кабинет" onerror="this.src='https://images.pexels.com/photos/1957477/pexels-photo-1957477.jpeg?auto=compress&w=600'">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=600&q=80" alt="Детская комната" onerror="this.src='https://images.pexels.com/photos/2362734/pexels-photo-2362734.jpeg?auto=compress&w=600'">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        (function() {
+            const track = document.getElementById('carouselTrack');
+            const cards = document.querySelectorAll('.product-card');
+            const navContainer = document.getElementById('carouselNav');
+            let currentIndex = 0;
+            const totalCards = cards.length;
+
+            function createNavDots() {
+                for (let i = 0; i < totalCards; i++) {
+                    const dot = document.createElement('button');
+                    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+                    dot.setAttribute('aria-label', 'Перейти к товару ' + (i + 1));
+                    dot.addEventListener('click', () => goToSlide(i));
+                    navContainer.appendChild(dot);
+                }
+            }
+
+            function updateCarousel() {
+                const offset = currentIndex * -100;
+                track.style.transform = `translateX(${offset}%)`;
+
+                cards.forEach((card, index) => {
+                    card.classList.remove('active', 'side', 'hidden');
+                    
+                    if (index === currentIndex) {
+                        card.classList.add('active');
+                    } else if (index === currentIndex - 1 || index === currentIndex + 1) {
+                        card.classList.add('side');
+                    } else if (index < currentIndex - 1 || index > currentIndex + 1) {
+                        card.classList.add('hidden');
+                    }
+                });
+
+                const dots = navContainer.querySelectorAll('.nav-dot');
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentIndex);
+                });
+            }
+
+            function goToSlide(index) {
+                currentIndex = Math.max(0, Math.min(index, totalCards - 1));
+                updateCarousel();
+            }
+
+            function nextSlide() {
+                goToSlide((currentIndex + 1) % totalCards);
+            }
+
+            function prevSlide() {
+                goToSlide((currentIndex - 1 + totalCards) % totalCards);
+            }
+
+            let wheelTimeout;
+            track.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                
+                clearTimeout(wheelTimeout);
+                wheelTimeout = setTimeout(() => {
+                    if (e.deltaY > 0) {
+                        nextSlide();
+                    } else {
+                        prevSlide();
+                    }
+                }, 50);
+            }, { passive: false });
+
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            track.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            track.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) {
+                        nextSlide();
+                    } else {
+                        prevSlide();
+                    }
+                }
+            }, { passive: true });
+
+            cards.forEach((card, index) => {
+                card.addEventListener('click', () => {
+                    if (index !== currentIndex) {
+                        goToSlide(index);
+                    }
+                });
+            });
+
+            createNavDots();
+            updateCarousel();
+        })();
+
+        (function() {
+            const observerOptions = {
+                threshold: 0.15,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, index * 100);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.advantage-card, .process-item').forEach(el => {
+                observer.observe(el);
+            });
+        })();
+    </script>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <a href="#" class="logo">SmartLight</a>
+                    <p>Российский производитель интерактивной мебели нового поколения. Создаём решения для умного и комфортного пространства с 2018 года.</p>
+                    <div class="footer-cert">
+                        <div class="cert-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                        </div>
+                        <div class="cert-text">
+                            <p>Сертифицированная продукция</p>
+                            <p>Вся мебель прошла проверку качества</p>
+                        </div>
+                    </div>
+                    <div class="footer-newsletter">
+                        <p class="newsletter-title">Подпишитесь на скидки и новинки</p>
+                        <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Спасибо за подписку!');">
+                            <input type="email" class="newsletter-input" placeholder="Ваш email" required>
+                            <button type="submit" class="newsletter-btn">OK</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="footer-nav">
+                    <h4 class="footer-title">Навигация</h4>
+                    <ul class="footer-links">
+                        <li><a href="#hero">Главная</a></li>
+                        <li><a href="#products">Каталог</a></li>
+                        <li><a href="#about">О компании</a></li>
+                        <li><a href="#gallery">Галерея</a></li>
+                        <li><a href="#">Акции</a></li>
+                        <li><a href="#">Контакты</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-services">
+                    <h4 class="footer-title">Услуги</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Проектирование</a></li>
+                        <li><a href="#">Изготовление</a></li>
+                        <li><a href="#">Доставка</a></li>
+                        <li><a href="#">Сборка</a></li>
+                        <li><a href="#">Гарантия</a></li>
+                        <li><a href="#">Рассрочка</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-contact">
+                    <h4 class="footer-title">Контакты</h4>
+                    <div class="footer-contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                        </div>
+                        <div class="contact-text">
+                            <p class="contact-label">Телефон</p>
+                            <p class="contact-value"><a href="tel:+74951234567">+7 (495) 123-45-67</a></p>
+                        </div>
+                    </div>
+                    <div class="footer-contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        </div>
+                        <div class="contact-text">
+                            <p class="contact-label">Адрес шоурума</p>
+                            <p class="contact-value">Москва, ул. Арбат, 24</p>
+                        </div>
+                    </div>
+                    <div class="footer-contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        </div>
+                        <div class="contact-text">
+                            <p class="contact-label">Email</p>
+                            <p class="contact-value"><a href="mailto:info@smartlight.ru">info@smartlight.ru</a></p>
+                        </div>
+                    </div>
+                    <div class="footer-contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                        </div>
+                        <div class="contact-text">
+                            <p class="contact-label">Режим работы</p>
+                            <p class="contact-value">Пн-Вс: 10:00 - 21:00</p>
+                        </div>
+                    </div>
+                    <div class="footer-social">
+                        <a href="#" class="social-link" aria-label="Telegram">
+                            <svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="VK">
+                            <svg viewBox="0 0 24 24"><path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1-1.49-1.135-1.744-1.135-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.118-5.335-3.202C4.624 10.857 4 8.587 4 8.145c0-.254.102-.491.593-.491h1.744c.44 0 .61.203.78.678.847 2.455 2.27 4.607 2.859 4.607.22 0 .322-.102.322-.66V9.721c-.068-1.186-.695-1.287-.695-1.71 0-.204.17-.407.44-.407h2.744c.373 0 .508.203.508.644v3.473c0 .372.17.508.271.508.22 0 .407-.136.814-.542 1.27-1.422 2.18-3.61 2.18-3.61.119-.254.322-.491.763-.491h1.744c.525 0 .644.27.525.644-.22 1.017-2.354 4.031-2.354 4.031-.186.305-.254.44 0 .78.186.254.796.779 1.203 1.253.745.847 1.32 1.558 1.473 2.05.17.49-.085.744-.576.744z"/></svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="YouTube">
+                            <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div>
+                    <p>&copy; 2024 SmartLight. Все права защищены.</p>
+                    <div class="footer-bottom-links">
+                        <a href="#">Политика конфиденциальности</a>
+                        <a href="#">Публичная оферта</a>
+                        <a href="#">Доставка и оплата</a>
+                        <a href="#">Возврат товара</a>
+                        <a href="#">FAQ</a>
+                    </div>
+                    <div class="footer-payments">
+                        <span class="payment-icon">VISA</span>
+                        <span class="payment-icon">MC</span>
+                        <span class="payment-icon">МИР</span>
+                        <span class="payment-icon">СБП</span>
+                        <span style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">Рассрочка 0%</span>
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; color: rgba(255,255,255,0.35);">ИНН 7707123456 &bull; ОГРН 1027700123456</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
