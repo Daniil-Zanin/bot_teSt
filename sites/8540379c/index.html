@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLight — Интерактивная мебель</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            min-height: 600px;
+            overflow: hidden;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-background img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(8px);
+            transform: scale(1.1);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(10, 10, 20, 0.6) 0%,
+                rgba(10, 10, 20, 0.3) 50%,
+                rgba(10, 10, 20, 0.7) 100%
+            );
+            z-index: 2;
+        }
+
+        .navigation {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 60px;
+            background: rgba(10, 10, 20, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .logo {
+            font-family: 'Oswald', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .logo span {
+            color: #00d4ff;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            font-size: 15px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-menu a:hover {
+            color: #00d4ff;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 2px;
+            background: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 5;
+            height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 0 60px 80px;
+        }
+
+        .hero-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(72px, 12vw, 180px);
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 0.9;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            max-width: 800px;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(18px, 2.5vw, 24px);
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            color: #0a0a14;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 50px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.3);
+            width: fit-content;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 212, 255, 0.5);
+        }
+
+        .cta-button svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover svg {
+            transform: translateX(4px);
+        }
+
+        .carousel-section {
+            width: 100%;
+            background: linear-gradient(180deg, #0a0a14 0%, #1a1a2e 100%);
+            padding: 60px 0;
+        }
+
+        .carousel-wrapper {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1200px;
+            overflow: hidden;
+        }
+
+        .carousel-track {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .product-card {
+            flex-shrink: 0;
+            width: 280px;
+            height: 380px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+            cursor: pointer;
+        }
+
+        .product-card.active {
+            width: 340px;
+            height: 460px;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.15);
+        }
+
+        .product-card.left-1,
+        .product-card.right-1 {
+            opacity: 0.7;
+            transform: scale(0.8);
+        }
+
+        .product-card.left-2,
+        .product-card.right-2 {
+            opacity: 0.4;
+            transform: scale(0.6);
+        }
+
+        .product-card.hidden {
+            opacity: 0;
+            transform: scale(0.4);
+            pointer-events: none;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .active .card-image {
+            height: 280px;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .product-card:hover .card-image img {
+            transform: scale(1.05);
+        }
+
+        .card-content {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .active .card-content {
+            padding: 24px;
+        }
+
+        .card-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .active .card-title {
+            font-size: 22px;
+        }
+
+        .card-description {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.5;
+        }
+
+        .active .card-description {
+            font-size: 14px;
+        }
+
+        .carousel-hint {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 14px;
+            margin-top: 30px;
+            letter-spacing: 1px;
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-dot.active {
+            background: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+            transform: scale(1.2);
+        }
+
+        .about-section {
+            background: #2a2a2a;
+            padding: 100px 60px;
+        }
+
+        .about-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 80px;
+            letter-spacing: 3px;
+        }
+
+        .about-block {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            margin-bottom: 100px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .about-block.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .about-block:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .about-text {
+            flex: 1;
+        }
+
+        .about-text h3 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .about-text p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.8;
+        }
+
+        .about-image {
+            flex: 1;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .steps-section {
+            background: #252525;
+            padding: 100px 60px;
+        }
+
+        .steps-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 80px;
+            letter-spacing: 3px;
+        }
+
+        .step-block {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            margin-bottom: 80px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .step-block.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .step-block:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .step-content {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            gap: 24px;
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            min-width: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Oswald', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0a0a14;
+        }
+
+        .step-icon.design { background: #FFD700; }
+        .step-icon.materials { background: #8B4513; }
+        .step-icon.assembly { background: #FFD700; }
+        .step-icon.testing { background: #8B4513; }
+
+        .step-text h3 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .step-text p {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.7;
+        }
+
+        .step-image {
+            flex: 1;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .step-image img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .step-image:hover img {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 1024px) {
+            .about-section,
+            .steps-section {
+                padding: 80px 40px;
+            }
+
+            .about-title,
+            .steps-title {
+                font-size: 40px;
+                margin-bottom: 60px;
+            }
+
+            .about-block,
+            .step-block {
+                gap: 40px;
+                margin-bottom: 60px;
+            }
+
+            .about-image img,
+            .step-image img {
+                height: 280px;
+            }
+
+            .step-icon {
+                width: 64px;
+                height: 64px;
+                min-width: 64px;
+                font-size: 24px;
+            }
+
+            .about-text h3 {
+                font-size: 26px;
+            }
+
+            .step-text h3 {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .about-section,
+            .steps-section {
+                padding: 60px 24px;
+            }
+
+            .about-title,
+            .steps-title {
+                font-size: 32px;
+                margin-bottom: 50px;
+            }
+
+            .about-block,
+            .step-block,
+            .about-block:nth-child(even),
+            .step-block:nth-child(even) {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .about-image img,
+            .step-image img {
+                height: 220px;
+            }
+
+            .step-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 16px;
+            }
+
+            .step-icon {
+                width: 56px;
+                height: 56px;
+                min-width: 56px;
+                font-size: 20px;
+            }
+
+            .about-text h3 {
+                font-size: 22px;
+            }
+
+            .step-text h3 {
+                font-size: 20px;
+            }
+
+            .about-text p,
+            .step-text p {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .about-title,
+            .steps-title {
+                font-size: 28px;
+            }
+
+            .about-image img,
+            .step-image img {
+                height: 180px;
+            }
+        }
+
+        .features-section {
+            background: #1a1a2e;
+            padding: 100px 60px;
+        }
+
+        .features-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 60px;
+            letter-spacing: 3px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-5px);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 153, 204, 0.1));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: #00d4ff;
+        }
+
+        .feature-card h3 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 20px;
+            color: #ffffff;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            padding: 100px 60px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 56px;
+            font-weight: 700;
+            color: #0a0a14;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+
+        .cta-section p {
+            font-size: 20px;
+            color: rgba(10, 10, 20, 0.8);
+            margin-bottom: 40px;
+        }
+
+        .cta-section .cta-button-dark {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 40px;
+            background: #0a0a14;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 50px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .cta-section .cta-button-dark:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        footer {
+            background: #000000;
+            padding: 40px 60px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-family: 'Oswald', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .footer-logo span {
+            color: #00d4ff;
+        }
+
+        .footer-contacts {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .footer-contacts a,
+        .footer-contacts span {
+            font-size: 15px;
+            color: #ffffff;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-contacts a:hover {
+            opacity: 0.7;
+        }
+
+        .footer-phone {
+            color: #FFD700 !important;
+            font-weight: 600;
+        }
+
+        .footer-divider {
+            width: 1px;
+            height: 16px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-copyright {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-copyright p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            footer {
+                padding: 40px 24px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 30px;
+                text-align: center;
+            }
+
+            .footer-contacts {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .footer-divider {
+                display: none;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .navigation {
+                padding: 20px 40px;
+            }
+
+            .hero-content {
+                padding: 0 40px 60px;
+            }
+
+            .hero-title {
+                letter-spacing: 4px;
+            }
+
+            .features-section,
+            .cta-section {
+                padding: 80px 40px;
+            }
+
+            .product-card {
+                width: 220px;
+                height: 320px;
+            }
+
+            .product-card.active {
+                width: 280px;
+                height: 380px;
+            }
+
+            .card-image {
+                height: 180px;
+            }
+
+            .active .card-image {
+                height: 230px;
+            }
+
+            .about-section,
+            .steps-section {
+                padding: 80px 40px;
+            }
+
+            .about-title,
+            .steps-title {
+                font-size: 40px;
+                margin-bottom: 60px;
+            }
+
+            .about-block,
+            .step-block {
+                gap: 40px;
+                margin-bottom: 60px;
+            }
+
+            .about-image img,
+            .step-image img {
+                height: 280px;
+            }
+
+            .step-icon {
+                width: 64px;
+                height: 64px;
+                min-width: 64px;
+                font-size: 24px;
+            }
+
+            .about-text h3 {
+                font-size: 26px;
+            }
+
+            .step-text h3 {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navigation {
+                padding: 16px 24px;
+            }
+
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                flex-direction: column;
+                background: rgba(10, 10, 20, 0.95);
+                padding: 30px;
+                gap: 25px;
+                backdrop-filter: blur(20px);
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .hamburger {
+                display: flex;
+                z-index: 20;
+            }
+
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px);
+            }
+
+            .hero-content {
+                padding: 0 24px 50px;
+            }
+
+            .hero-title {
+                letter-spacing: 2px;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
+            .carousel-section {
+                padding: 40px 0;
+            }
+
+            .carousel-track {
+                gap: 10px;
+            }
+
+            .product-card {
+                width: 180px;
+                height: 280px;
+            }
+
+            .product-card.active {
+                width: 220px;
+                height: 320px;
+            }
+
+            .card-image {
+                height: 140px;
+            }
+
+            .active .card-image {
+                height: 180px;
+            }
+
+            .card-content {
+                padding: 12px;
+            }
+
+            .card-title {
+                font-size: 14px;
+            }
+
+            .active .card-title {
+                font-size: 16px;
+            }
+
+            .card-description {
+                font-size: 11px;
+                display: none;
+            }
+
+            .active .card-description {
+                display: block;
+                font-size: 12px;
+            }
+
+            .features-section,
+            .cta-section {
+                padding: 60px 24px;
+            }
+
+            .features-title {
+                font-size: 36px;
+                margin-bottom: 40px;
+            }
+
+            .cta-section h2 {
+                font-size: 36px;
+            }
+
+            footer {
+                padding: 40px 24px;
+            }
+
+            .about-section,
+            .steps-section {
+                padding: 60px 24px;
+            }
+
+            .about-title,
+            .steps-title {
+                font-size: 32px;
+                margin-bottom: 50px;
+            }
+
+            .about-block,
+            .step-block,
+            .about-block:nth-child(even),
+            .step-block:nth-child(even) {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .about-image img,
+            .step-image img {
+                height: 220px;
+            }
+
+            .step-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 16px;
+            }
+
+            .step-icon {
+                width: 56px;
+                height: 56px;
+                min-width: 56px;
+                font-size: 20px;
+            }
+
+            .about-text h3 {
+                font-size: 22px;
+            }
+
+            .step-text h3 {
+                font-size: 20px;
+            }
+
+            .about-text p,
+            .step-text p {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 56px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+            }
+
+            .cta-button {
+                padding: 16px 32px;
+                font-size: 14px;
+            }
+
+            .product-card {
+                width: 150px;
+                height: 240px;
+            }
+
+            .product-card.active {
+                width: 180px;
+                height: 270px;
+            }
+
+            .card-image {
+                height: 110px;
+            }
+
+            .active .card-image {
+                height: 140px;
+            }
+
+            .about-title,
+            .steps-title {
+                font-size: 28px;
+            }
+
+            .about-image img,
+            .step-image img {
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-background">
+            <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1920&q=80" 
+                 alt="Современная интерактивная мебель в стильном интерьере">
+        </div>
+        <div class="hero-overlay"></div>
+        
+        <nav class="navigation">
+            <a href="#" class="logo">Smart<span>Light</span></a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#features">Преимущества</a></li>
+                <li><a href="#about">О компании</a></li>
+                <li><a href="#products">Продукты</a></li>
+                <li><a href="#contact">Контакты</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+
+        <div class="hero-content">
+            <h1 class="hero-title">SmartLight</h1>
+            <p class="hero-subtitle">Интерактивная мебель — мебель будущего</p>
+            <a href="#products" class="cta-button">
+                Смотреть каталог
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <section class="carousel-section" id="products">
+        <div class="carousel-wrapper">
+            <div class="carousel-track" id="carouselTrack">
+                <div class="product-card left-2" data-index="0">
+                    <div class="card-image">
+                        <img src="https://images.pexels.com/photos/276583/pexels-photo-276583.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Интерактивная мебель SmartLight в интерьере">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">SmartTable Lite</h3>
+                        <p class="card-description">Базовый интеллектуальный стол для дома и офиса</p>
+                    </div>
+                </div>
+                <div class="product-card left-1" data-index="1">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80" alt="SmartTable Pro">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">SmartTable Pro</h3>
+                        <p class="card-description">Профессиональное решение для креативных студий</p>
+                    </div>
+                </div>
+                <div class="product-card active" data-index="2">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1581428982868-e410dd047a90?w=600&q=80" alt="SmartDesk Interactive">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">SmartDesk Interactive</h3>
+                        <p class="card-description">Интерактивная рабочая станция нового поколения</p>
+                    </div>
+                </div>
+                <div class="product-card right-1" data-index="3">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&q=80" alt="SmartTable Gaming">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">SmartTable Gaming</h3>
+                        <p class="card-description">Игровой стол с RGB-подсветкой и интеграцией</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="carousel-hint">Прокрутите колесико мыши для навигации</p>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </section>
+
+    <section class="about-section" id="about">
+        <h2 class="about-title">О компании</h2>
+        
+        <div class="about-block">
+            <div class="about-text">
+                <h3>SmartLight — создаём будущее мебели</h3>
+                <p>Мы разрабатываем интерактивную мебель нового поколения, которая объединяет инновационные технологии и продуманный дизайн. Наша миссия — превратить каждый дом и офис в пространство, где технологии служат человеку, а не наоборот. С 2018 года мы создаём решения для тех, кто ценит комфорт, функциональность и стиль.</p>
+            </div>
+            <div class="about-image">
+                <img src="https://images.pexels.com/photos/3862130/pexels-photo-3862130.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Производство SmartLight">
+            </div>
+        </div>
+
+        <div class="about-block">
+            <div class="about-text">
+                <h3>Технологии дополненной реальности</h3>
+                <p>Интеграция AR-технологий позволяет нашим изделиям взаимодействовать с окружающим пространством. Встроенные датчики, умная подсветка и сенсорные поверхности делают мебель SmartLight не просто предметом интерьера, а полноценным цифровым помощником. Каждое изделие работает в экосистеме умного дома и синхронизируется с мобильными устройствами.</p>
+            </div>
+            <div class="about-image">
+                <img src="https://images.pexels.com/photos/6707052/pexels-photo-6707052.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Производство SmartLight">
+            </div>
+        </div>
+
+        <div class="about-block">
+            <div class="about-text">
+                <h3>Качество сборки и материалов</h3>
+                <p>Мы используем только премиальные материалы: массив натурального дерева, авиационный алюминий, закалённое стекло и экологичные композитные составы. Каждый этап производства проходит строгий контроль качества. Наша фабрика оснащена современным оборудованием с ЧПУ, что обеспечивает безупречную точность сборки и долговечность каждого изделия.</p>
+            </div>
+            <div class="about-image">
+                <img src="https://images.pexels.com/photos/1082271/pexels-photo-1082271.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Качественные материалы SmartLight">
+            </div>
+        </div>
+    </section>
+
+    <section class="steps-section">
+        <h2 class="steps-title">Этапы производства</h2>
+        
+        <div class="step-block">
+            <div class="step-content">
+                <div class="step-icon design">01</div>
+                <div class="step-text">
+                    <h3>Эскиз и проектирование</h3>
+                    <p>Каждое изделие начинается с детальной проработки концепции. Наши дизайнеры создают 3D-модели, учитывая эргономику, функциональность и эстетику. Проектирование включает моделирование нагрузок и тестирование в виртуальной среде для исключения ошибок до начала производства.</p>
+                </div>
+            </div>
+            <div class="step-image">
+                <img src="https://images.pexels.com/photos/4614227/pexels-photo-4614227.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Проектирование мебели">
+            </div>
+        </div>
+
+        <div class="step-block">
+            <div class="step-content">
+                <div class="step-icon materials">02</div>
+                <div class="step-text">
+                    <h3>Отбор материалов</h3>
+                    <p>Мы работаем только с проверенными поставщиками премиального сырья. Каждая партия материалов проходит лабораторные испытания на прочность, влагостойкость и экологичность. Дерево закупается из устойчивых лесных хозяйств, металл — из сертифицированных источников.</p>
+                </div>
+            </div>
+            <div class="step-image">
+                <img src="https://images.pexels.com/photos/5767921/pexels-photo-5767921.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Отбор материалов">
+            </div>
+        </div>
+
+        <div class="step-block">
+            <div class="step-content">
+                <div class="step-icon assembly">03</div>
+                <div class="step-text">
+                    <h3>Сборка и интеграция</h3>
+                    <p>Опытные мастера собирают каждое изделие вручную, используя современное оборудование с ЧПУ. На этом этапе устанавливаются электронные компоненты, сенсоры и системы подсветки. Все соединения герметизируются, а скрытый монтаж обеспечивает аккуратный внешний вид.</p>
+                </div>
+            </div>
+            <div class="step-image">
+                <img src="https://images.pexels.com/photos-6936205/pexels-photo-6936205.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Сборка мебели">
+            </div>
+        </div>
+
+        <div class="step-block">
+            <div class="step-content">
+                <div class="step-icon testing">04</div>
+                <div class="step-text">
+                    <h3>Тестирование и контроль</h3>
+                    <p>Каждое готовое изделие проходит многоступенчатую проверку: функциональное тестирование электроники, испытания нагрузкой, проверка герметичности и долговечности покрытий. Мы симулируем годы эксплуатации за несколько дней, чтобы гарантировать безупречную работу.</p>
+                </div>
+            </div>
+            <div class="step-image">
+                <img src="https://images.pexels.com/photos-5582849/pexels-photo-5582849.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Тестирование продукции">
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section" id="features">
+        <h2 class="features-title">Наши преимущества</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M19 14.5l-2.47 1.077a2.25 2.25 0 01-1.591.659H9.061a2.25 2.25 0 01-1.591-.659L5 14.5m14 0l.342.342a1.5 1.5 0 010 2.121l-3.106 3.106a1.5 1.5 0 01-2.121 0l-3.106-3.106a1.5 1.5 0 010-2.121L5 14.5" />
+                    </svg>
+                </div>
+                <h3>Сенсорное управление</h3>
+                <p>Интуитивный интерфейс с поддержкой мультитач</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                    </svg>
+                </div>
+                <h3>Быстрая синхронизация</h3>
+                <p>Мгновенное подключение к облачным сервисам</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+                    </svg>
+                </div>
+                <h3>Адаптивный дизайн</h3>
+                <p>Подстраивается под любое пространство</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    </svg>
+                </div>
+                <h3>Гарантия 5 лет</h3>
+                <p>Надежное качество и долговечность</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section" id="contact">
+        <h2>Готовы к будущему?</h2>
+        <p>Закажите консультацию и узнайте больше о наших продуктах</p>
+        <a href="#" class="cta-button-dark">
+            Связаться с нами
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+        </a>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <a href="#" class="footer-logo">Smart<span>Light</span></a>
+            <div class="footer-contacts">
+                <a href="tel:+74951234567" class="footer-phone">+7 (495) 123-45-67</a>
+                <div class="footer-divider"></div>
+                <a href="mailto:info@smartlight.ru">info@smartlight.ru</a>
+                <div class="footer-divider"></div>
+                <span>Москва, ул. Инновационная, 15</span>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>© 2026 SmartLight. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        const carouselTrack = document.getElementById('carouselTrack');
+        const cards = document.querySelectorAll('.product-card');
+        const dotsContainer = document.getElementById('carouselDots');
+        let currentIndex = 2;
+        const totalCards = cards.length;
+
+        cards.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.className = 'carousel-dot' + (index === currentIndex ? ' active' : '');
+            dot.addEventListener('click', () => goToSlide(index));
+            dotsContainer.appendChild(dot);
+        });
+
+        function updateCarousel() {
+            cards.forEach((card, index) => {
+                card.classList.remove('active', 'left-1', 'left-2', 'right-1', 'right-2', 'hidden');
+                
+                let diff = index - currentIndex;
+                
+                if (diff === 0) {
+                    card.classList.add('active');
+                } else if (diff === -1) {
+                    card.classList.add('left-1');
+                } else if (diff === -2) {
+                    card.classList.add('left-2');
+                } else if (diff === 1) {
+                    card.classList.add('right-1');
+                } else if (diff === 2) {
+                    card.classList.add('right-2');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
+            });
+        }
+
+        function goToSlide(index) {
+            currentIndex = index;
+            updateCarousel();
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % totalCards;
+            updateCarousel();
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+            updateCarousel();
+        }
+
+        let isScrolling = false;
+        let scrollTimeout;
+
+        carouselTrack.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            
+            if (isScrolling) return;
+            
+            if (e.deltaY > 0) {
+                nextSlide();
+            } else {
+                prevSlide();
+            }
+            
+            isScrolling = true;
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                isScrolling = false;
+            }, 600);
+        });
+
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.querySelector('.carousel-wrapper').addEventListener('touchstart', (e) => {
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        document.querySelector('.carousel-wrapper').addEventListener('touchend', (e) => {
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartY - touchEndY;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        }
+
+        updateCarousel();
+
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.about-block, .step-block').forEach(block => {
+            observer.observe(block);
+        });
+    </script>
+</body>
+</html>
