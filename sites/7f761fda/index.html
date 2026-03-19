@@ -1,0 +1,2194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLight — Интерактивная мебель будущего</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-black: #0a0a0a;
+            --color-white: #ffffff;
+            --color-gray: #888888;
+            --color-gray-light: #f5f5f5;
+            --color-accent: #ffffff;
+            --color-yellow: #e6a817;
+            --color-brown: #8b5a2b;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body: 'Inter', -apple-system, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-black);
+            color: var(--color-white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%);
+            transition: background 0.3s ease;
+        }
+
+        .nav.scrolled {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav__logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .nav__links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav__link {
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            position: relative;
+        }
+
+        .nav__link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--color-white);
+            transition: width 0.3s ease;
+        }
+
+        .nav__link:hover {
+            opacity: 1;
+        }
+
+        .nav__link:hover::after {
+            width: 100%;
+        }
+
+        .nav__burger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .nav__burger span {
+            width: 25px;
+            height: 2px;
+            background: var(--color-white);
+            transition: all 0.3s ease;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            min-height: 100svh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero__background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .hero__background img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(3px) brightness(0.4);
+        }
+
+        .hero__overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                rgba(10, 10, 10, 0.3) 0%,
+                rgba(10, 10, 10, 0.5) 50%,
+                rgba(10, 10, 10, 0.9) 100%
+            );
+            z-index: -1;
+        }
+
+        .hero__content {
+            text-align: center;
+            padding: 2rem;
+            max-width: 900px;
+        }
+
+        .hero__title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero__subtitle {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 0.1em;
+            margin-bottom: 3rem;
+        }
+
+        .hero__cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2.5rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: var(--color-white);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .hero__cta:hover {
+            background: var(--color-white);
+            color: var(--color-black);
+            border-color: var(--color-white);
+        }
+
+        .hero__cta svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .hero__cta:hover svg {
+            transform: translateX(4px);
+        }
+
+        .hero__scroll {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.6;
+            animation: bounce 2s infinite;
+        }
+
+        .hero__scroll-text {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .hero__scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--color-white), transparent);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 8rem 2rem;
+        }
+
+        .section--dark {
+            background: var(--color-black);
+        }
+
+        .section--gray {
+            background: #111111;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section__header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section__label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--color-gray);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .section__title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        /* About Section - Production Stages */
+        .about {
+            padding: 8rem 2rem;
+            background: linear-gradient(180deg, #0a0a0a 0%, #111111 100%);
+            position: relative;
+        }
+
+        .about__intro {
+            max-width: 800px;
+            margin: 0 auto 6rem;
+            text-align: center;
+        }
+
+        .about__intro-text {
+            font-size: 1.15rem;
+            color: var(--color-gray);
+            line-height: 1.9;
+        }
+
+        .about__intro-text strong {
+            color: var(--color-yellow);
+            font-weight: 500;
+        }
+
+        .stages {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .stages__line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, rgba(230, 168, 23, 0.3) 10%, rgba(230, 168, 23, 0.3) 90%, transparent);
+            transform: translateX(-50%);
+        }
+
+        .stage {
+            display: flex;
+            align-items: center;
+            padding: 2rem 0;
+            position: relative;
+        }
+
+        .stage:nth-child(odd) {
+            flex-direction: row;
+            justify-content: flex-start;
+            padding-right: calc(50% + 3rem);
+        }
+
+        .stage:nth-child(even) {
+            flex-direction: row-reverse;
+            justify-content: flex-start;
+            padding-left: calc(50% + 3rem);
+        }
+
+        .stage__number {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 56px;
+            height: 56px;
+            background: var(--color-black);
+            border: 2px solid var(--color-yellow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-yellow);
+            z-index: 2;
+        }
+
+        .stage__content {
+            background: linear-gradient(145deg, rgba(30, 30, 30, 0.8) 0%, rgba(20, 20, 20, 0.8) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 2rem 2.5rem;
+            max-width: 420px;
+            transition: all 0.4s ease;
+        }
+
+        .stage__content:hover {
+            border-color: rgba(230, 168, 23, 0.4);
+            box-shadow: 0 10px 40px rgba(230, 168, 23, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .stage__icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--color-yellow) 0%, var(--color-brown) 100%);
+            border-radius: 12px;
+        }
+
+        .stage__icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--color-black);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .stage__title {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            color: var(--color-white);
+        }
+
+        .stage__text {
+            font-size: 0.95rem;
+            color: var(--color-gray);
+            line-height: 1.7;
+        }
+
+        .stage__image {
+            margin-top: 1.25rem;
+            border-radius: 12px;
+            overflow: hidden;
+            height: 140px;
+        }
+
+        .stage__image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .stage__content:hover .stage__image img {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 900px) {
+            .stages__line {
+                left: 28px;
+            }
+
+            .stage {
+                padding: 0 0 2rem 70px !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+            }
+
+            .stage__number {
+                left: 0;
+                transform: translateX(0);
+            }
+
+            .stage__content {
+                max-width: 100%;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stage__content {
+                padding: 1.5rem;
+            }
+
+            .stage__title {
+                font-size: 1.2rem;
+            }
+
+            .stage__image {
+                height: 120px;
+            }
+        }
+
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .feature__icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+        }
+
+        .feature__icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: var(--color-white);
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .feature__title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .feature__text {
+            font-size: 0.95rem;
+            color: var(--color-gray);
+            line-height: 1.8;
+        }
+
+        /* Product Carousel Section */
+        .carousel-section {
+            padding: 6rem 0;
+            background: var(--color-black);
+            overflow: hidden;
+        }
+
+        .carousel-section .section__header {
+            margin-bottom: 2rem;
+        }
+
+        .carousel-section .section__label {
+            color: var(--color-yellow);
+        }
+
+        .carousel-section .section__title {
+            background: linear-gradient(135deg, #ffffff 0%, #e6a817 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .carousel-hint {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--color-gray);
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .carousel-hint svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--color-yellow);
+            animation: scrollHint 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollHint {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+        }
+
+        .carousel-container:active {
+            cursor: grabbing;
+        }
+
+        .carousel-track {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+        }
+
+        .carousel-track.dragging {
+            transition: none;
+        }
+
+        .product-card {
+            flex-shrink: 0;
+            width: 280px;
+            background: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0.5;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+
+        .product-card.center {
+            width: 350px;
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+            border-color: var(--color-yellow);
+            box-shadow: 0 0 40px rgba(230, 168, 23, 0.2);
+        }
+
+        .product-card.center .product-card__image {
+            height: 280px;
+        }
+
+        .product-card.center .product-card__title {
+            color: var(--color-yellow);
+        }
+
+        .product-card__image-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card__image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card.center .product-card__image {
+            transform: scale(1.05);
+        }
+
+        .product-card__badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: var(--color-yellow);
+            color: var(--color-black);
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .product-card__content {
+            padding: 1.25rem 1.5rem 1.5rem;
+        }
+
+        .product-card__category {
+            font-size: 0.7rem;
+            color: var(--color-brown);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-card__title {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .product-card__desc {
+            font-size: 0.85rem;
+            color: var(--color-gray);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .product-card__price {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-white);
+        }
+
+        .product-card__price span {
+            font-size: 0.85rem;
+            color: var(--color-gray);
+            font-weight: 400;
+            text-decoration: line-through;
+            margin-left: 0.5rem;
+        }
+
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+
+        .carousel-nav button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent;
+            color: var(--color-white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-nav button:hover {
+            background: var(--color-yellow);
+            border-color: var(--color-yellow);
+            color: var(--color-black);
+        }
+
+        .carousel-nav button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .carousel-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-indicator.active {
+            background: var(--color-yellow);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .carousel-container {
+                height: 450px;
+            }
+
+            .product-card {
+                width: 220px;
+            }
+
+            .product-card.center {
+                width: 280px;
+            }
+
+            .product-card__image {
+                height: 180px;
+            }
+
+            .product-card.center .product-card__image {
+                height: 220px;
+            }
+
+            .carousel-track {
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .carousel-container {
+                height: 400px;
+            }
+
+            .product-card {
+                width: 180px;
+            }
+
+            .product-card.center {
+                width: 240px;
+            }
+
+            .product-card__image {
+                height: 150px;
+            }
+
+            .product-card.center .product-card__image {
+                height: 180px;
+            }
+
+            .product-card__content {
+                padding: 1rem;
+            }
+
+            .product-card__title {
+                font-size: 1rem;
+            }
+
+            .product-card__desc {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Gallery Section */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 300px);
+            gap: 1.5rem;
+        }
+
+        .gallery__item {
+            position: relative;
+            overflow: hidden;
+            background: #1a1a1a;
+        }
+
+        .gallery__item--large {
+            grid-column: span 2;
+        }
+
+        .gallery__item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .gallery__item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery__overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .gallery__item:hover .gallery__overlay {
+            transform: translateY(0);
+        }
+
+        .gallery__title {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .gallery__desc {
+            font-size: 0.85rem;
+            color: var(--color-gray);
+        }
+
+        /* CTA Section */
+        .cta {
+            text-align: center;
+            padding: 10rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta__bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .cta__bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.2);
+        }
+
+        .cta__title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .cta__text {
+            font-size: 1.1rem;
+            color: var(--color-gray);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .cta__btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.25rem 3rem;
+            background: var(--color-white);
+            color: var(--color-black);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .cta__btn:hover {
+            background: transparent;
+            color: var(--color-white);
+            box-shadow: inset 0 0 0 2px var(--color-white);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 6rem 2rem 3rem;
+            background: linear-gradient(180deg, #0a0a0a 0%, #080808 100%);
+            border-top: 1px solid rgba(230, 168, 23, 0.15);
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(180deg, rgba(230, 168, 23, 0.03) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .footer__top {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+        }
+
+        .footer__brand {
+            max-width: 320px;
+        }
+
+        .footer__logo {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.25rem;
+            background: linear-gradient(135deg, #ffffff 0%, #e6a817 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer__tagline {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .footer__contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .footer__contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer__contact-item:hover {
+            color: var(--color-yellow);
+        }
+
+        .footer__contact-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .footer__contact-item:hover .footer__contact-icon {
+            background: rgba(230, 168, 23, 0.15);
+        }
+
+        .footer__contact-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--color-yellow);
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .footer__contact-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+
+        .footer__contact-text a {
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+
+        .footer__contact-item:hover .footer__contact-text,
+        .footer__contact-item:hover .footer__contact-text a {
+            color: var(--color-white);
+        }
+
+        .footer__column-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 1.75rem;
+            color: var(--color-white);
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+
+        .footer__column-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 24px;
+            height: 2px;
+            background: var(--color-yellow);
+            border-radius: 1px;
+        }
+
+        .footer__links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.875rem;
+        }
+
+        .footer__link {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .footer__link::before {
+            content: '';
+            width: 0;
+            height: 1px;
+            background: var(--color-yellow);
+            transition: width 0.3s ease;
+        }
+
+        .footer__link:hover {
+            color: var(--color-white);
+            padding-left: 0.5rem;
+        }
+
+        .footer__link:hover::before {
+            width: 8px;
+        }
+
+        .footer__newsletter {
+            margin-bottom: 4rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 2.5rem;
+            background: linear-gradient(135deg, rgba(230, 168, 23, 0.08) 0%, rgba(230, 168, 23, 0.02) 100%);
+            border: 1px solid rgba(230, 168, 23, 0.15);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .footer__newsletter-content {
+            flex: 1;
+        }
+
+        .footer__newsletter-title {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--color-white);
+        }
+
+        .footer__newsletter-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .footer__newsletter-form {
+            display: flex;
+            gap: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .footer__newsletter-input {
+            padding: 0.875rem 1.25rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--color-white);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            width: 260px;
+            transition: all 0.3s ease;
+        }
+
+        .footer__newsletter-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .footer__newsletter-input:focus {
+            outline: none;
+            border-color: var(--color-yellow);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .footer__newsletter-btn {
+            padding: 0.875rem 1.5rem;
+            background: var(--color-yellow);
+            border: none;
+            border-radius: 8px;
+            color: var(--color-black);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .footer__newsletter-btn:hover {
+            background: var(--color-white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(230, 168, 23, 0.3);
+        }
+
+        .footer__bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer__copyright {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .footer__socials {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .footer__social {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .footer__social:hover {
+            background: var(--color-yellow);
+            border-color: var(--color-yellow);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(230, 168, 23, 0.25);
+        }
+
+        .footer__social svg {
+            width: 18px;
+            height: 18px;
+            fill: rgba(255, 255, 255, 0.7);
+            transition: fill 0.3s ease;
+        }
+
+        .footer__social:hover svg {
+            fill: var(--color-black);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--color-black);
+            z-index: 99;
+            padding: 6rem 2rem;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .mobile-menu.active {
+            display: flex;
+        }
+
+        .mobile-menu__link {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 250px);
+            }
+
+            .gallery__item--large {
+                grid-column: span 1;
+            }
+
+            .footer__top {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav__links {
+                display: none;
+            }
+
+            .nav__burger {
+                display: flex;
+            }
+
+            .section {
+                padding: 5rem 1.5rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+
+            .gallery__item {
+                height: 250px;
+            }
+
+            .gallery__overlay {
+                transform: translateY(0);
+            }
+
+            .cta {
+                padding: 6rem 1.5rem;
+            }
+        }
+
+            .footer__top {
+                grid-template-columns: 1fr 1fr;
+                gap: 2.5rem;
+            }
+
+            .footer__newsletter {
+                flex-direction: column;
+                text-align: center;
+                padding: 2rem;
+            }
+
+            .footer__newsletter-form {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .footer__newsletter-input {
+                width: 100%;
+            }
+
+            .footer__bottom {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .footer {
+                padding: 4rem 1.5rem 2rem;
+            }
+
+            .footer__top {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+                text-align: center;
+            }
+
+            .footer__brand {
+                max-width: 100%;
+            }
+
+            .footer__logo {
+                font-size: 1.75rem;
+            }
+
+            .footer__contact-list {
+                align-items: center;
+            }
+
+            .footer__contact-item {
+                justify-content: center;
+            }
+
+            .footer__column-title::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .footer__links {
+                align-items: center;
+            }
+
+            .footer__newsletter {
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .footer__newsletter-title {
+                font-size: 1.1rem;
+            }
+
+            .footer__newsletter-text {
+                font-size: 0.85rem;
+                margin-bottom: 1rem;
+            }
+
+            .footer__bottom {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .footer__copyright {
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer__logo {
+                font-size: 1.5rem;
+            }
+
+            .footer__tagline {
+                font-size: 0.85rem;
+            }
+
+            .footer__contact-icon {
+                width: 36px;
+                height: 36px;
+            }
+
+            .footer__contact-icon svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            .footer__contact-text {
+                font-size: 0.85rem;
+            }
+
+            .footer__newsletter-btn {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.8rem;
+            }
+
+            .footer__social {
+                width: 38px;
+                height: 38px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <a href="#" class="nav__logo">SmartLight</a>
+        <ul class="nav__links">
+            <li><a href="#features" class="nav__link">Преимущества</a></li>
+            <li><a href="#about" class="nav__link">О компании</a></li>
+            <li><a href="#carousel" class="nav__link">Каталог</a></li>
+            <li><a href="#gallery" class="nav__link">Коллекция</a></li>
+            <li><a href="#contact" class="nav__link">Контакты</a></li>
+        </ul>
+        <div class="nav__burger" id="burger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#features" class="mobile-menu__link">Преимущества</a>
+        <a href="#about" class="mobile-menu__link">О компании</a>
+        <a href="#carousel" class="mobile-menu__link">Каталог</a>
+        <a href="#gallery" class="mobile-menu__link">Коллекция</a>
+        <a href="#contact" class="mobile-menu__link">Контакты</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero__background">
+            <img src="assets/images/8f22119cb115.jpg" alt="Современная интерактивная мебель в интерьере">
+        </div>
+        <div class="hero__overlay"></div>
+        <div class="hero__content">
+            <h1 class="hero__title">SmartLight</h1>
+            <p class="hero__subtitle">Мы выпускаем интерактивную мебель — мебель будущего</p>
+            <a href="#contact" class="hero__cta">
+                Узнать больше
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+        <div class="hero__scroll">
+            <span class="hero__scroll-text">Листайте вниз</span>
+            <div class="hero__scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section section--dark" id="features">
+        <div class="container">
+            <div class="section__header">
+                <span class="section__label">Технологии</span>
+                <h2 class="section__title">Почему выбирают нас</h2>
+            </div>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature__icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature__title">Сенсорные панели</h3>
+                    <p class="feature__text">Встроенные мультитач-экраны позволяют управлять интерьером одним прикосновением</p>
+                </div>
+                <div class="feature">
+                    <div class="feature__icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="5"/>
+                            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature__title">Адаптивная подсветка</h3>
+                    <p class="feature__text">Интеллектуальная система освещения создаёт идеальную атмосферу в любое время суток</p>
+                </div>
+                <div class="feature">
+                    <div class="feature__icon">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                            <path d="M8 21h8M12 17v4"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature__title">Интеграция с умным домом</h3>
+                    <p class="feature__text">Полная синхронизация с системами управления зданием и голосовыми ассистентами</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section__header">
+                <span class="section__label">Производство</span>
+                <h2 class="section__title">О компании</h2>
+            </div>
+            <div class="about__intro">
+                <p class="about__intro-text">
+                    Мы создаём <strong>интерактивную мебель нового поколения</strong> с 2018 года. 
+                    Наше производство объединяет традиции мастерства с передовыми технологиями — 
+                    от проектирования до финальной сборки каждый этап контролируется с особой тщательностью. 
+                    Результат — мебель, которая меняет представление о комфорте и функциональности.
+                </p>
+            </div>
+            <div class="stages">
+                <div class="stages__line"></div>
+                
+                <div class="stage">
+                    <div class="stage__number">01</div>
+                    <div class="stage__content">
+                        <div class="stage__icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                                <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                                <path d="M2 2l7.586 7.586"/>
+                                <circle cx="11" cy="11" r="2"/>
+                            </svg>
+                        </div>
+                        <h3 class="stage__title">Концепция и проектирование</h3>
+                        <p class="stage__text">Разрабатываем уникальные концепции интерактивной мебели. 3D-моделирование и прототипирование для идеальной эргономики.</p>
+                        <div class="stage__image">
+                            <img src="assets/images/3c6449cefad9.jpg" alt="Проектирование интерактивной мебели">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stage">
+                    <div class="stage__number">02</div>
+                    <div class="stage__content">
+                        <div class="stage__icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/>
+                                <line x1="7" y1="7" x2="7.01" y2="7"/>
+                            </svg>
+                        </div>
+                        <h3 class="stage__title">Подбор материалов</h3>
+                        <p class="stage__text">Используем только премиальные породы дерева, закалённое стекло и авиационный алюминий. Каждый материал проходит тестирование.</p>
+                        <div class="stage__image">
+                            <img src="assets/images/fee97f631ac3.jpg" alt="Премиальные материалы для мебели">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stage">
+                    <div class="stage__number">03</div>
+                    <div class="stage__content">
+                        <div class="stage__icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+                            </svg>
+                        </div>
+                        <h3 class="stage__title">Производство и сборка</h3>
+                        <p class="stage__text">CNC-фрезерование, лазерная резка и роботизированная сборка обеспечивают точность до 0.01 мм. Ручная финишная обработка.</p>
+                        <div class="stage__image">
+                            <img src="assets/images/b99d951f761a.jpg" alt="Производство мебели на станках с ЧПУ">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stage">
+                    <div class="stage__number">04</div>
+                    <div class="stage__content">
+                        <div class="stage__icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M9 12l2 2 4-4"/>
+                                <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="stage__title">Интеграция электроники</h3>
+                        <p class="stage__text">Встраиваем сенсорные панели, LED-подсветку и системы умного дома. Программирование и калибровка каждого модуля.</p>
+                        <div class="stage__image">
+                            <img src="assets/images/abec1accc01d.jpg" alt="Интеграция электроники в мебель">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stage">
+                    <div class="stage__number">05</div>
+                    <div class="stage__content">
+                        <div class="stage__icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                        </div>
+                        <h3 class="stage__title">Тестирование и контроль</h3>
+                        <p class="stage__text">100+ часов тестирования каждого изделия. Проверка нагрузки, влагостойкость, электробезопасность и долговечность покрытия.</p>
+                        <div class="stage__image">
+                            <img src="assets/images/4649a2a473e0.jpg" alt="Тестирование качества мебели">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stage">
+                    <div class="stage__number">06</div>
+                    <div class="stage__content">
+                        <div class="stage__icon">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="1" y="3" width="15" height="13"/>
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                                <circle cx="5.5" cy="18.5" r="2.5"/>
+                                <circle cx="18.5" cy="18.5" r="2.5"/>
+                            </svg>
+                        </div>
+                        <h3 class="stage__title">Доставка и установка</h3>
+                        <p class="stage__text">Бесплатная доставка по России. Профессиональный монтаж и настройка на месте. Гарантия 5 лет на всю продукцию.</p>
+                        <div class="stage__image">
+                            <img src="assets/images/67732989712f.jpg" alt="Доставка и установка мебели">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Carousel Section -->
+    <section class="carousel-section" id="carousel">
+        <div class="container">
+            <div class="section__header">
+                <span class="section__label">Каталог</span>
+                <h2 class="section__title">Выберите свой продукт</h2>
+            </div>
+        </div>
+        <div class="carousel-hint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 19V5M5 12l7-7 7 7"/>
+            </svg>
+            Прокрутите колёсиком или перетащите
+        </div>
+        <div class="carousel-container" id="carouselContainer">
+            <div class="carousel-track" id="carouselTrack">
+                <div class="product-card" data-index="0">
+                    <div class="product-card__image-wrapper">
+                        <img src="assets/images/c47c647211e6.jpg" alt="Интерактивный стол SmartTable Pro" class="product-card__image">
+                        <span class="product-card__badge">Хит</span>
+                    </div>
+                    <div class="product-card__content">
+                        <p class="product-card__category">Интерактивные столы</p>
+                        <h3 class="product-card__title">SmartTable Pro</h3>
+                        <p class="product-card__desc">Флагманская модель с 4K дисплеем и мультитач-поверхностью</p>
+                        <div class="product-card__price">₽299 000 <span>₽349 000</span></div>
+                    </div>
+                </div>
+                <div class="product-card" data-index="1">
+                    <div class="product-card__image-wrapper">
+                        <img src="assets/images/8bfc2c04171f.jpg" alt="Умный диван Interactive Sofa" class="product-card__image">
+                        <span class="product-card__badge">New</span>
+                    </div>
+                    <div class="product-card__content">
+                        <p class="product-card__category">Мягкая мебель</p>
+                        <h3 class="product-card__title">Interactive Sofa</h3>
+                        <p class="product-card__desc">Встроенные экраны в подлокотниках и USB-порты для зарядки</p>
+                        <div class="product-card__price">₽189 000</div>
+                    </div>
+                </div>
+                <div class="product-card" data-index="2">
+                    <div class="product-card__image-wrapper">
+                        <img src="assets/images/91cfbf0af332.jpg" alt="Умная барная стойка SmartBar" class="product-card__image">
+                    </div>
+                    <div class="product-card__content">
+                        <p class="product-card__category">Барная мебель</p>
+                        <h3 class="product-card__title">SmartBar Counter</h3>
+                        <p class="product-card__desc">Сенсорная панель управления подсветкой и музыкой</p>
+                        <div class="product-card__price">₽145 000 <span>₽169 000</span></div>
+                    </div>
+                </div>
+                <div class="product-card" data-index="3">
+                    <div class="product-card__image-wrapper">
+                        <img src="assets/images/dbb97b7e16a0.jpg" alt="Медиа-консоль MediaConsole" class="product-card__image">
+                    </div>
+                    <div class="product-card__content">
+                        <p class="product-card__category">ТВ-мебель</p>
+                        <h3 class="product-card__title">MediaConsole</h3>
+                        <p class="product-card__desc">Встроенная акустика и беспроводная зарядка для устройств</p>
+                        <div class="product-card__price">₽99 000</div>
+                    </div>
+                </div>
+                <div class="product-card" data-index="4">
+                    <div class="product-card__image-wrapper">
+                        <img src="assets/images/d44022898150.jpg" alt="Кофейный столик SmartCoffee" class="product-card__image">
+                        <span class="product-card__badge">-20%</span>
+                    </div>
+                    <div class="product-card__content">
+                        <p class="product-card__category">Журнальные столики</p>
+                        <h3 class="product-card__title">SmartCoffee Table</h3>
+                        <p class="product-card__desc">Минималистичный дизайн с индукционной зарядкой</p>
+                        <div class="product-card__price">₽59 000 <span>₽74 000</span></div>
+                    </div>
+                </div>
+                <div class="product-card" data-index="5">
+                    <div class="product-card__image-wrapper">
+                        <img src="assets/images/4d4ab9c84bb7.jpg" alt="Рабочее место SmartDesk" class="product-card__image">
+                    </div>
+                    <div class="product-card__content">
+                        <p class="product-card__category">Рабочие станции</p>
+                        <h3 class="product-card__title">SmartDesk Studio</h3>
+                        <p class="product-card__desc">Электрорегулировка высоты и встроенный планшет</p>
+                        <div class="product-card__price">₽219 000</div>
+                    </div>
+                </div>
+                <div class="product-card" data-index="6">
+                    <div class="product-card__image-wrapper">
+                        <img src="assets/images/c47c647211e6.jpg" alt="Прикроватная тумба SmartNight" class="product-card__image">
+                    </div>
+                    <div class="product-card__content">
+                        <p class="product-card__category">Спальня</p>
+                        <h3 class="product-card__title">SmartNight Stand</h3>
+                        <p class="product-card__desc">Встроенная подсветка и будильник с имитацией рассвета</p>
+                        <div class="product-card__price">₽39 000</div>
+                    </div>
+                </div>
+                <div class="product-card" data-index="7">
+                    <div class="product-card__image-wrapper">
+                        <img src="assets/images/91cfbf0af332.jpg" alt="Полка SmartShelf" class="product-card__image">
+                    </div>
+                    <div class="product-card__content">
+                        <p class="product-card__category">Системы хранения</p>
+                        <h3 class="product-card__title">SmartShelf Unit</h3>
+                        <p class="product-card__desc">Автоматическая сортировка и климат-контроль для коллекций</p>
+                        <div class="product-card__price">₽79 000 <span>₽95 000</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-nav">
+            <button id="carouselPrev" aria-label="Предыдущий">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+            </button>
+            <button id="carouselNext" aria-label="Следующий">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18l6-6-6-6"/>
+                </svg>
+            </button>
+        </div>
+        <div class="carousel-indicators" id="carouselIndicators"></div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="section section--gray" id="gallery">
+        <div class="container">
+            <div class="section__header">
+                <span class="section__label">Портфолио</span>
+                <h2 class="section__title">Наша коллекция</h2>
+            </div>
+            <div class="gallery">
+                <div class="gallery__item gallery__item--large">
+                    <img src="assets/images/37d5af18f83b.jpg" alt="Интерактивный стол SmartTable Pro">
+                    <div class="gallery__overlay">
+                        <h3 class="gallery__title">SmartTable Pro</h3>
+                        <p class="gallery__desc">Флагманская модель для переговорных</p>
+                    </div>
+                </div>
+                <div class="gallery__item">
+                    <img src="assets/images/8bfc2c04171f.jpg" alt="Умный диван Interactive Sofa">
+                    <div class="gallery__overlay">
+                        <h3 class="gallery__title">Interactive Sofa</h3>
+                        <p class="gallery__desc">Мебель с встроенными экранами</p>
+                    </div>
+                </div>
+                <div class="gallery__item">
+                    <img src="assets/images/91cfbf0af332.jpg" alt="Интерактивная барная стойка">
+                    <div class="gallery__overlay">
+                        <h3 class="gallery__title">SmartBar Counter</h3>
+                        <p class="gallery__desc">Для ресторанов и баров</p>
+                    </div>
+                </div>
+                <div class="gallery__item">
+                    <img src="assets/images/dbb97b7e16a0.jpg" alt="Умная тумба под телевизор">
+                    <div class="gallery__overlay">
+                        <h3 class="gallery__title">MediaConsole</h3>
+                        <p class="gallery__desc">Центр домашних развлечений</p>
+                    </div>
+                </div>
+                <div class="gallery__item gallery__item--large">
+                    <img src="assets/images/7532cb754155.jpg" alt="Интерактивная мебель в интерьере">
+                    <div class="gallery__overlay">
+                        <h3 class="gallery__title">Smart Living Set</h3>
+                        <p class="gallery__desc">Комплект для умной гостиной</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta" id="contact">
+        <div class="cta__bg">
+            <img src="assets/images/4ddecd1b9adf.jpg" alt="Современный интерьер с интерактивной мебелью">
+        </div>
+        <div class="container">
+            <h2 class="cta__title">Готовы к мебели будущего?</h2>
+            <p class="cta__text">Свяжитесь с нами, чтобы обсудить проект или записаться на демонстрацию наших интерактивных решений</p>
+            <a href="mailto:info@smartlight.ru" class="cta__btn">Связаться с нами</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <div class="footer__top">
+            <div class="footer__brand">
+                <div class="footer__logo">SmartLight</div>
+                <p class="footer__tagline">Создаём интерактивную мебель нового поколения. Объединяем технологии и дизайн для вашего комфорта.</p>
+                <div class="footer__contact-list">
+                    <a href="tel:+74951234567" class="footer__contact-item">
+                        <div class="footer__contact-icon">
+                            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                        </div>
+                        <div class="footer__contact-text">+7 (495) 123-45-67</div>
+                    </a>
+                    <a href="mailto:info@smartlight.ru" class="footer__contact-item">
+                        <div class="footer__contact-icon">
+                            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        </div>
+                        <div class="footer__contact-text">info@smartlight.ru</div>
+                    </a>
+                    <div class="footer__contact-item">
+                        <div class="footer__contact-icon">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        </div>
+                        <div class="footer__contact-text">г. Москва, ул. Технологическая, 15</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__column">
+                <h4 class="footer__column-title">Продукция</h4>
+                <ul class="footer__links">
+                    <li><a href="#" class="footer__link">Интерактивные столы</a></li>
+                    <li><a href="#" class="footer__link">Умные диваны</a></li>
+                    <li><a href="#" class="footer__link">Сенсорные панели</a></li>
+                    <li><a href="#" class="footer__link">Аксессуары</a></li>
+                </ul>
+            </div>
+            <div class="footer__column">
+                <h4 class="footer__column-title">Компания</h4>
+                <ul class="footer__links">
+                    <li><a href="#" class="footer__link">О нас</a></li>
+                    <li><a href="#" class="footer__link">Проекты</a></li>
+                    <li><a href="#" class="footer__link">Карьера</a></li>
+                    <li><a href="#" class="footer__link">Новости</a></li>
+                </ul>
+            </div>
+            <div class="footer__column">
+                <h4 class="footer__column-title">Поддержка</h4>
+                <ul class="footer__links">
+                    <li><a href="#" class="footer__link">Документация</a></li>
+                    <li><a href="#" class="footer__link">Гарантия</a></li>
+                    <li><a href="#" class="footer__link">Контакты</a></li>
+                    <li><a href="#" class="footer__link">FAQ</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer__newsletter">
+            <div class="footer__newsletter-content">
+                <h4 class="footer__newsletter-title">Подпишитесь на новости</h4>
+                <p class="footer__newsletter-text">Узнавайте первыми о новых продуктах и специальных предложениях</p>
+            </div>
+            <form class="footer__newsletter-form" action="#" method="POST">
+                <input type="email" class="footer__newsletter-input" placeholder="Ваш email" required>
+                <button type="submit" class="footer__newsletter-btn">Подписаться</button>
+            </form>
+        </div>
+        <div class="footer__bottom">
+            <p class="footer__copyright">© 2026 SmartLight. Все права защищены.</p>
+            <div class="footer__socials">
+                <a href="#" class="footer__social" aria-label="Telegram">
+                    <svg viewBox="0 0 24 24"><path d="M21.198 2.433a2.242 2.242 0 00-1.022.215l-17.15 7.593a1.6 1.6 0 00.145 2.97l4.246 1.467 1.644 5.165a1.3 1.3 0 002.121.44l2.545-2.472 4.62 3.473a1.424 1.424 0 002.14-.552l4.992-15.574a2.33 2.33 0 00-1.281-2.695z"/></svg>
+                </a>
+                <a href="#" class="footer__social" aria-label="VK">
+                    <svg viewBox="0 0 24 24"><path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1-1.49-1.135-1.744-1.135-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.118-5.335-3.202C4.624 10.857 4 8.684 4 8.198c0-.254.102-.491.593-.491h1.744c.44 0 .61.203.78.677.863 2.49 2.303 4.675 2.896 4.675.22 0 .322-.102.322-.66V9.721c-.068-1.186-.695-1.287-.695-1.71 0-.204.17-.407.44-.407h2.744c.373 0 .508.203.508.643v3.473c0 .372.17.508.271.508.22 0 .407-.136.813-.542 1.254-1.406 2.151-3.574 2.151-3.574.119-.254.322-.491.763-.491h1.744c.525 0 .644.27.525.643-.22 1.017-2.354 4.031-2.354 4.031-.186.305-.254.44 0 .78.186.254.796.779 1.203 1.253.745.847 1.32 1.558 1.473 2.05.17.474-.085.716-.576.716z"/></svg>
+                </a>
+                <a href="#" class="footer__social" aria-label="YouTube">
+                    <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const nav = document.getElementById('nav');
+        const burger = document.getElementById('burger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileLinks = document.querySelectorAll('.mobile-menu__link');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        burger.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Product Carousel
+        const carouselContainer = document.getElementById('carouselContainer');
+        const carouselTrack = document.getElementById('carouselTrack');
+        const carouselPrev = document.getElementById('carouselPrev');
+        const carouselNext = document.getElementById('carouselNext');
+        const carouselIndicators = document.getElementById('carouselIndicators');
+        const cards = document.querySelectorAll('.product-card');
+
+        let currentIndex = 0;
+        let isDragging = false;
+        let startX = 0;
+        let currentTranslate = 0;
+        let prevTranslate = 0;
+        let animationID = 0;
+        let autoScrollInterval;
+
+        const totalCards = cards.length;
+        const cardWidth = 280;
+        const centerCardWidth = 350;
+        const gap = 24;
+        const visibleCards = Math.min(5, totalCards);
+
+        function getCardWidth(index) {
+            return index === currentIndex ? centerCardWidth : cardWidth;
+        }
+
+        function calculateOffset() {
+            let offset = 0;
+            const containerWidth = carouselContainer.offsetWidth;
+            const centerPosition = containerWidth / 2;
+
+            for (let i = 0; i < currentIndex; i++) {
+                offset += getCardWidth(i) + gap;
+            }
+
+            const currentCardStart = offset;
+            const currentCardCenter = currentCardStart + centerCardWidth / 2;
+
+            offset = centerPosition - currentCardCenter;
+
+            return -offset;
+        }
+
+        function updateCarousel(animate = true) {
+            if (!animate) {
+                carouselTrack.classList.add('dragging');
+            } else {
+                carouselTrack.classList.remove('dragging');
+            }
+
+            currentTranslate = calculateOffset();
+            carouselTrack.style.transform = `translateX(${currentTranslate}px)`;
+            prevTranslate = currentTranslate;
+
+            cards.forEach((card, index) => {
+                card.classList.remove('center');
+                if (index === currentIndex) {
+                    card.classList.add('center');
+                }
+            });
+
+            updateIndicators();
+        }
+
+        function updateIndicators() {
+            const indicators = carouselIndicators.querySelectorAll('.carousel-indicator');
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentIndex);
+            });
+        }
+
+        function createIndicators() {
+            for (let i = 0; i < totalCards; i++) {
+                const indicator = document.createElement('button');
+                indicator.className = 'carousel-indicator' + (i === 0 ? ' active' : '');
+                indicator.setAttribute('aria-label', `Перейти к продукту ${i + 1}`);
+                indicator.addEventListener('click', () => goToSlide(i));
+                carouselIndicators.appendChild(indicator);
+            }
+        }
+
+        function goToSlide(index) {
+            currentIndex = ((index % totalCards) + totalCards) % totalCards;
+            updateCarousel();
+        }
+
+        function nextSlide() {
+            goToSlide(currentIndex + 1);
+        }
+
+        function prevSlide() {
+            goToSlide(currentIndex - 1);
+        }
+
+        function startAutoScroll() {
+            stopAutoScroll();
+            autoScrollInterval = setInterval(nextSlide, 4000);
+        }
+
+        function stopAutoScroll() {
+            if (autoScrollInterval) {
+                clearInterval(autoScrollInterval);
+            }
+        }
+
+        // Wheel scroll
+        let wheelTimeout;
+        carouselContainer.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            clearTimeout(wheelTimeout);
+            wheelTimeout = setTimeout(() => {
+                if (e.deltaY > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+                startAutoScroll();
+            }, 50);
+        }, { passive: false });
+
+        // Touch/Drag
+        function setPositionByX(x) {
+            const diff = x - startX;
+            currentTranslate = prevTranslate + diff;
+            carouselTrack.style.transform = `translateX(${currentTranslate}px)`;
+        }
+
+        function animation() {
+            carouselTrack.style.transform = `translateX(${currentTranslate}px)`;
+            if (isDragging) {
+                requestAnimationFrame(animation);
+            }
+        }
+
+        carouselContainer.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                startX = e.touches[0].clientX;
+                carouselTrack.classList.add('dragging');
+                stopAutoScroll();
+                animationID = requestAnimationFrame(animation);
+            }
+        }, { passive: false });
+
+        carouselContainer.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches.length === 1) {
+                setPositionByX(e.touches[0].clientX);
+            }
+        }, { passive: false });
+
+        carouselContainer.addEventListener('touchend', () => {
+            isDragging = false;
+            cancelAnimationFrame(animationID);
+            carouselTrack.classList.remove('dragging');
+
+            const diff = currentTranslate - prevTranslate;
+            if (Math.abs(diff) > 80) {
+                if (diff > 0) {
+                    prevSlide();
+                } else {
+                    nextSlide();
+                }
+            } else {
+                updateCarousel();
+            }
+            startAutoScroll();
+        });
+
+        // Mouse drag
+        carouselContainer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            carouselTrack.classList.add('dragging');
+            stopAutoScroll();
+        });
+
+        carouselContainer.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            setPositionByX(e.clientX);
+        });
+
+        carouselContainer.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            carouselTrack.classList.remove('dragging');
+
+            const diff = currentTranslate - prevTranslate;
+            if (Math.abs(diff) > 80) {
+                if (diff > 0) {
+                    prevSlide();
+                } else {
+                    nextSlide();
+                }
+            } else {
+                updateCarousel();
+            }
+            startAutoScroll();
+        });
+
+        carouselContainer.addEventListener('mouseleave', () => {
+            if (isDragging) {
+                isDragging = false;
+                carouselTrack.classList.remove('dragging');
+                updateCarousel();
+            }
+        });
+
+        // Navigation buttons
+        carouselPrev.addEventListener('click', () => {
+            prevSlide();
+            startAutoScroll();
+        });
+
+        carouselNext.addEventListener('click', () => {
+            nextSlide();
+            startAutoScroll();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const carouselRect = carouselContainer.getBoundingClientRect();
+            const isInViewport = (
+                carouselRect.top < window.innerHeight &&
+                carouselRect.bottom > 0
+            );
+
+            if (isInViewport) {
+                if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                    startAutoScroll();
+                } else if (e.key === 'ArrowRight') {
+                    nextSlide();
+                    startAutoScroll();
+                }
+            }
+        });
+
+        // Initialize
+        createIndicators();
+        updateCarousel(false);
+        startAutoScroll();
+
+        // Pause on hover
+        carouselContainer.addEventListener('mouseenter', stopAutoScroll);
+        carouselContainer.addEventListener('mouseleave', startAutoScroll);
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            updateCarousel(false);
+        });
+    </script>
+</body>
+</html>
