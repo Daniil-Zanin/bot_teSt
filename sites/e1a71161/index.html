@@ -1,0 +1,2299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIRO — Современная мебель</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #2c2c2c;
+            --color-accent: #c9a86c;
+            --color-accent-dark: #a8894f;
+            --color-light: #f8f6f3;
+            --color-white: #ffffff;
+            --color-text: #4a4a4a;
+            --color-text-light: #7a7a7a;
+            --font-heading: 'Playfair Display', Georgia, serif;
+            --font-body: 'Inter', -apple-system, sans-serif;
+            --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: var(--color-white);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1.5rem 0;
+            transition: var(--transition);
+        }
+
+        header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
+            padding: 1rem 0;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-white);
+            text-decoration: none;
+            letter-spacing: 2px;
+            transition: var(--transition);
+        }
+
+        header.scrolled .logo {
+            color: var(--color-primary);
+        }
+
+        nav {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        nav a {
+            color: var(--color-white);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-accent);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        header.scrolled nav a {
+            color: var(--color-text);
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .menu-toggle span {
+            width: 28px;
+            height: 2px;
+            background: var(--color-white);
+            transition: var(--transition);
+        }
+
+        header.scrolled .menu-toggle span {
+            background: var(--color-primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            min-height: 700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 120%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(20, 20, 20, 0.5) 0%,
+                rgba(20, 20, 20, 0.3) 50%,
+                rgba(20, 20, 20, 0.6) 100%
+            );
+            z-index: -1;
+        }
+
+        .hero-content {
+            text-align: center;
+            color: var(--color-white);
+            max-width: 900px;
+            padding: 0 2rem;
+            transform: translateY(30px);
+            opacity: 0;
+            animation: fadeUp 1s ease forwards 0.3s;
+        }
+
+        @keyframes fadeUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 0.95rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .hero-title {
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            font-weight: 300;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1.1rem 3rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--color-accent);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-accent-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(201, 168, 108, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--color-white);
+            border: 2px solid var(--color-white);
+        }
+
+        .btn-outline:hover {
+            background: var(--color-white);
+            color: var(--color-primary);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--color-white);
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        .scroll-indicator .mouse {
+            width: 26px;
+            height: 42px;
+            border: 2px solid var(--color-white);
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .scroll-indicator .mouse::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 8px;
+            background: var(--color-white);
+            border-radius: 4px;
+            animation: scrollAnim 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollAnim {
+            0%, 100% { opacity: 1; top: 10px; }
+            50% { opacity: 0.3; top: 20px; }
+        }
+
+        /* Benefits Section */
+        .benefits {
+            padding: 8rem 0;
+            background: var(--color-white);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 5rem;
+        }
+
+        .section-tag {
+            font-size: 0.85rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: clamp(2.2rem, 4vw, 3rem);
+            color: var(--color-primary);
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-description {
+            color: var(--color-text-light);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+        }
+
+        .benefit-card {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--color-light);
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .benefit-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-white);
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .benefit-icon svg {
+            width: 36px;
+            height: 36px;
+            stroke: var(--color-accent);
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .benefit-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+
+        .benefit-card p {
+            color: var(--color-text-light);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Parallax Gallery Section */
+        .parallax-gallery {
+            position: relative;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .parallax-gallery-item {
+            position: relative;
+            height: 100vh;
+            min-height: 600px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .parallax-gallery-bg {
+            position: absolute;
+            inset: -20%;
+            z-index: -1;
+            will-change: transform;
+        }
+
+        .parallax-gallery-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .parallax-gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(20, 20, 20, 0.4) 0%,
+                rgba(20, 20, 20, 0.2) 50%,
+                rgba(20, 20, 20, 0.5) 100%
+            );
+            z-index: 0;
+        }
+
+        .parallax-gallery-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: var(--color-white);
+            max-width: 700px;
+            padding: 2rem;
+        }
+
+        .parallax-gallery-content .project-number {
+            font-family: var(--font-heading);
+            font-size: 6rem;
+            font-weight: 700;
+            color: var(--color-accent);
+            opacity: 0.3;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .parallax-gallery-content h3 {
+            font-family: var(--font-heading);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .parallax-gallery-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 2rem;
+        }
+
+        .parallax-gallery-tag {
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            background: var(--color-accent);
+            color: var(--color-white);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 2px;
+        }
+
+        .gallery-scroll-hint {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-white);
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            z-index: 10;
+        }
+
+        .gallery-scroll-hint .arrow {
+            animation: bounceDown 2s ease-in-out infinite;
+        }
+
+        @keyframes bounceDown {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        .gallery-nav {
+            position: absolute;
+            bottom: 3rem;
+            right: 3rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 10;
+        }
+
+        .gallery-nav button {
+            width: 50px;
+            height: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            background: transparent;
+            color: var(--color-white);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .gallery-nav button:hover {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+        }
+
+        .gallery-nav button svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .gallery-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 10;
+        }
+
+        .gallery-progress-bar {
+            height: 100%;
+            background: var(--color-accent);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Original Gallery Section - Enhanced */
+        .gallery {
+            padding: 8rem 0;
+            background: var(--color-light);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 300px);
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .gallery-item:nth-child(1) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.08);
+        }
+
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 50%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover::after {
+            opacity: 1;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem;
+            color: var(--color-white);
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .gallery-overlay h4 {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .gallery-overlay span {
+            font-size: 0.85rem;
+            color: var(--color-accent);
+        }
+
+        /* Parallax CTA Section */
+        .cta-section {
+            position: relative;
+            padding: 12rem 0;
+            overflow: hidden;
+        }
+
+        .cta-bg {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+        }
+
+        .cta-bg img {
+            width: 100%;
+            height: 120%;
+            object-fit: cover;
+        }
+
+        .cta-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(20, 20, 20, 0.75);
+            z-index: -1;
+        }
+
+        .cta-content {
+            text-align: center;
+            color: var(--color-white);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-content .section-title {
+            color: var(--color-white);
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+        }
+
+        .cta-content .section-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Testimonial */
+        .testimonial {
+            padding: 8rem 0;
+            background: var(--color-white);
+        }
+
+        .testimonial-card {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 3rem;
+            background: var(--color-light);
+            border-radius: 4px;
+        }
+
+        .testimonial-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            border: 4px solid var(--color-white);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .testimonial-card blockquote {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-style: italic;
+            color: var(--color-primary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonial-card .author {
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .testimonial-card .role {
+            font-size: 0.9rem;
+            color: var(--color-text-light);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--color-primary);
+            color: var(--color-white);
+            padding: 5rem 0 2rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .footer-brand .logo {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--color-white);
+        }
+
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            width: 44px;
+            height: 44px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+        }
+
+        .social-links svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--color-white);
+        }
+
+        .footer-column h4 {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column ul a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-column ul a:hover {
+            color: var(--color-accent);
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+        }
+
+        .footer-bottom a:hover {
+            color: var(--color-accent);
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--color-primary);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .mobile-nav.active {
+            display: flex;
+        }
+
+        .mobile-nav a {
+            color: var(--color-white);
+            font-size: 1.5rem;
+            text-decoration: none;
+            font-family: var(--font-heading);
+        }
+
+        .mobile-nav .close-menu {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 2rem;
+            color: var(--color-white);
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .benefits-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 250px);
+            }
+
+            .gallery-item:nth-child(1) {
+                grid-column: span 2;
+            }
+
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .catalog-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+
+            .gallery-item:nth-child(1) {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+
+            .gallery-item {
+                height: 280px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .testimonial-card blockquote {
+                font-size: 1.2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cta-buttons .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .catalog-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .catalog-card-image {
+                height: 240px;
+            }
+
+            .parallax-gallery-item {
+                height: 100vh;
+                min-height: 500px;
+            }
+
+            .parallax-gallery-content .project-number {
+                font-size: 4rem;
+            }
+
+            .parallax-gallery-content h3 {
+                font-size: 1.8rem;
+            }
+
+            .parallax-gallery-content p {
+                font-size: 1rem;
+            }
+
+            .gallery-nav {
+                bottom: 2rem;
+                right: 1.5rem;
+            }
+
+            .gallery-nav button {
+                width: 44px;
+                height: 44px;
+            }
+
+            .gallery-scroll-hint {
+                bottom: 6rem;
+            }
+        }
+
+        /* About Company Parallax Section */
+        .about-company {
+            position: relative;
+            padding: 10rem 0;
+            overflow: hidden;
+        }
+
+        .about-bg {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+        }
+
+        .about-bg img {
+            width: 100%;
+            height: 140%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .about-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(44, 44, 44, 0.92) 0%, rgba(44, 44, 44, 0.75) 100%);
+            z-index: -1;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+            color: var(--color-white);
+        }
+
+        .about-text h2 {
+            font-family: var(--font-heading);
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .about-text h2 span {
+            color: var(--color-accent);
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--color-accent);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 1024px) {
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .about-company {
+                padding: 6rem 0;
+            }
+            
+            .about-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .stat-item {
+                padding: 1.5rem 1rem;
+            }
+            
+            .stat-number {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Catalog Section */
+        .catalog {
+            padding: 8rem 0;
+            background: var(--color-white);
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+        }
+
+        .catalog-card {
+            background: var(--color-light);
+            border-radius: 4px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .catalog-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+        }
+
+        .catalog-card-image {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+        }
+
+        .catalog-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .catalog-card:hover .catalog-card-image img {
+            transform: scale(1.08);
+        }
+
+        .catalog-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--color-accent);
+            color: var(--color-white);
+            padding: 0.4rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 2px;
+        }
+
+        .catalog-card-content {
+            padding: 2rem;
+        }
+
+        .catalog-category {
+            font-size: 0.8rem;
+            color: var(--color-accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .catalog-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            color: var(--color-primary);
+            margin-bottom: 0.8rem;
+        }
+
+        .catalog-card p {
+            color: var(--color-text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.2rem;
+        }
+
+        .catalog-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .catalog-price {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .catalog-price span {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--color-text-light);
+        }
+
+        .btn-catalog {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: 2px solid var(--color-accent);
+            color: var(--color-accent);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: var(--transition);
+        }
+
+        .btn-catalog:hover {
+            background: var(--color-accent);
+            color: var(--color-white);
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 8rem 0;
+            background: var(--color-light);
+        }
+
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+        }
+
+        .contact-info h3 {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            color: var(--color-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-info > p {
+            color: var(--color-text-light);
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+        }
+
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .contact-item {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .contact-item-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--color-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+        }
+
+        .contact-item-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--color-accent);
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .contact-item-content h4 {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .contact-item-content p {
+            color: var(--color-text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .contact-item-content a {
+            color: var(--color-text);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .contact-item-content a:hover {
+            color: var(--color-accent);
+        }
+
+        .contact-map {
+            margin-top: 2.5rem;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-map iframe {
+            width: 100%;
+            height: 250px;
+            border: none;
+            display: block;
+        }
+
+        .contact-form-wrapper {
+            background: var(--color-white);
+            padding: 3rem;
+            border-radius: 4px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .contact-form-wrapper h3 {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-form-wrapper > p {
+            color: var(--color-text-light);
+            margin-bottom: 2rem;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-text);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 1rem 1.2rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: var(--color-text);
+            transition: var(--transition);
+            background: var(--color-light);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            background: var(--color-white);
+        }
+
+        .form-group textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--color-text-light);
+        }
+
+        .form-submit {
+            margin-top: 0.5rem;
+        }
+
+        .form-submit .btn {
+            width: 100%;
+            padding: 1.2rem 2rem;
+        }
+
+        .form-success {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .form-success.show {
+            display: block;
+        }
+
+        .form-success svg {
+            width: 64px;
+            height: 64px;
+            stroke: #4CAF50;
+            margin-bottom: 1rem;
+        }
+
+        .form-success h4 {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-success p {
+            color: var(--color-text-light);
+        }
+
+        @media (max-width: 1024px) {
+            .contact-wrapper {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-form-wrapper {
+                padding: 2rem;
+            }
+
+            .contact-map iframe {
+                height: 200px;
+            }
+        }
+
+        /* Catalog Filter */
+        .catalog-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.8rem 2rem;
+            background: transparent;
+            border: 1px solid var(--color-text-light);
+            color: var(--color-text);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            color: var(--color-white);
+        }
+
+        /* Parallax JS Enhancement */
+        .parallax-container {
+            overflow: hidden;
+        }
+
+        .parallax-bg {
+            will-change: transform;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container">
+            <a href="#" class="logo">MIRO</a>
+            <nav>
+                <a href="#about">О нас</a>
+                <a href="#benefits">Преимущества</a>
+                <a href="#gallery">Коллекция</a>
+                <a href="#catalog">Каталог</a>
+                <a href="#testimonial">Отзывы</a>
+                <a href="#contact">Контакты</a>
+            </nav>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav">
+        <span class="close-menu" id="closeMenu">&times;</span>
+        <a href="#benefits">Преимущества</a>
+        <a href="#gallery">Коллекция</a>
+        <a href="#catalog">Каталог</a>
+        <a href="#testimonial">Отзывы</a>
+        <a href="#testimonial">Отзывы</a>
+        <a href="#contact">Контакты</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero parallax-container" id="hero">
+        <div class="hero-bg parallax-bg" id="heroBg">
+            <img src="assets/images/fe3f9e09cc5e.jpg" 
+                 alt="Современная гостиная с минималистичной мебелью">
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <p class="hero-subtitle">Коллекция 2026</p>
+            <h1 class="hero-title">Мебель, которая<br>вдохновляет</h1>
+            <p class="hero-description">Создаём пространства для жизни, где каждая деталь продумана до мелочей. Качество, функциональность и эстетика в каждом предмете мебели.</p>
+            <a href="#gallery" class="btn btn-primary">Смотреть коллекцию</a>
+        </div>
+        <div class="scroll-indicator">
+            <span>Листайте вниз</span>
+            <div class="mouse"></div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits" id="benefits">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-tag">Почему мы</p>
+                <h2 class="section-title">Наши преимущества</h2>
+                <p class="section-description">Мы создаём мебель, которая служит десятилетиями. Наши ключевые преимущества — это гарантия качества, внимание к деталям и соблюдение сроков.</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    </div>
+                    <h3>Качество материалов</h3>
+                    <p>Используем только сертифицированные материалы от проверенных поставщиков. Каждая партия дерева проходит строгий контроль качества перед запуском в производство.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3>Индивидуальный подход</h3>
+                    <p>Каждый проект начинается с детальной консультации. Мы учитываем все ваши пожелания, особенности помещения и создаём мебель, идеально подходящую именно вам.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                    <h3>Сроки изготовления</h3>
+                    <p>Среднее время производства составляет 3-4 недели. Точные сроки озвучиваются при согласовании заказа, и мы всегда соблюдаем оговоренные даты доставки.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    </div>
+                    <h3>Натуральные материалы</h3>
+                    <p>Используем только массив дерева, натуральный текстиль и экологичные покрытия для долговечности и безопасности.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    </div>
+                    <h3>Ручная работа</h3>
+                    <p>Каждый предмет создаётся мастерами с многолетним опытом, что гарантирует безупречное качество сборки.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    </div>
+                    <h3>Индивидуальный дизайн</h3>
+                    <p>Создаём мебель по вашим размерам и пожеланиям, чтобы она идеально вписалась в ваше пространство.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Company Section with Parallax -->
+    <section class="about-company parallax-container" id="about">
+        <div class="about-bg parallax-bg" id="aboutBg">
+            <img src="assets/images/6a720584b825.jpg" 
+                 alt="Мастерская по изготовлению мебели">
+        </div>
+        <div class="about-overlay"></div>
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>Наша <span>мастерская</span> — место, где рождается уникальная мебель</h2>
+                    <p>С 2010 года мы создаём авторскую мебель ручной работы в историческом центре Москвы. Наша мастерская объединяет традиции классического столярного мастерства с современными технологиями обработки дерева.</p>
+                    <p>Каждый предмет мебели проходит путь от эскиза до готового изделия под контролем одного мастера. Мы работаем только с массивом натурального дерева — дубом, ясенем, орехом и вишней — и используем экологичные отделочные материалы.</p>
+                    <p>Наша философия проста: мебель должна служить поколениям, а не годам.</p>
+                </div>
+                <div class="about-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">лет опыта</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">2 500</div>
+                        <div class="stat-label">проектов</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">мастеров</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">98%</div>
+                        <div class="stat-label">довольных клиентов</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Parallax Gallery Section -->
+    <section class="parallax-gallery" id="parallaxGallery">
+        <div class="parallax-gallery-item active" data-index="0">
+            <div class="parallax-gallery-bg" id="pgBg0">
+                <img src="assets/images/752e0d1b03ae.jpg" 
+                     alt="Современная гостиная с панорамными окнами">
+            </div>
+            <div class="parallax-gallery-overlay"></div>
+            <div class="parallax-gallery-content">
+                <span class="project-number">01</span>
+                <h3>Гостиная в стиле минимализм</h3>
+                <p>Полностью преображенное пространство с высокими потолками, натуральными материалами и мягким естественным освещением.</p>
+                <span class="parallax-gallery-tag">Жилая недвижимость</span>
+            </div>
+            <div class="gallery-scroll-hint">
+                <span>Листайте</span>
+                <span class="arrow">↓</span>
+            </div>
+        </div>
+        <div class="parallax-gallery-item" data-index="1">
+            <div class="parallax-gallery-bg" id="pgBg1">
+                <img src="assets/images/218fe9437c1f.jpg" 
+                     alt="Роскошная кухня с островом">
+            </div>
+            <div class="parallax-gallery-overlay"></div>
+            <div class="parallax-gallery-content">
+                <span class="project-number">02</span>
+                <h3>Кухня-столовая премиум-класса</h3>
+                <p>Проект для семьи из четырёх человек с отдельной зоной для готовки, островом и обеденной группой на 8 персон.</p>
+                <span class="parallax-gallery-tag">Кухни</span>
+            </div>
+        </div>
+        <div class="parallax-gallery-item" data-index="2">
+            <div class="parallax-gallery-bg" id="pgBg2">
+                <img src="assets/images/1eb067499ada.jpg" 
+                     alt="Уютная спальня в теплых тонах">
+            </div>
+            <div class="parallax-gallery-overlay"></div>
+            <div class="parallax-gallery-content">
+                <span class="project-number">03</span>
+                <h3>Спальня с гардеробной</h3>
+                <p>Приватное пространство для отдыха с встроенной гардеробной системой и кроватью ручной работы из массива дуба.</p>
+                <span class="parallax-gallery-tag">Спальни</span>
+            </div>
+        </div>
+        <div class="parallax-gallery-item" data-index="3">
+            <div class="parallax-gallery-bg" id="pgBg3">
+                <img src="assets/images/729bc962ffbc.jpg" 
+                     alt="Современный кабинет с библиотекой">
+            </div>
+            <div class="parallax-gallery-overlay"></div>
+            <div class="parallax-gallery-content">
+                <span class="project-number">04</span>
+                <h3>Домашний кабинет</h3>
+                <p>Рабочее пространство с библиотекой, вмещающей более 500 томов, и специальным освещением для комфортной работы.</p>
+                <span class="parallax-gallery-tag">Кабинеты</span>
+            </div>
+        </div>
+        <div class="gallery-nav">
+            <button id="galleryPrev" aria-label="Предыдущий проект">
+                <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button id="galleryNext" aria-label="Следующий проект">
+                <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+        </div>
+        <div class="gallery-progress">
+            <div class="gallery-progress-bar" id="galleryProgressBar"></div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-tag">Наши работы</p>
+                <h2 class="section-title">Избранные проекты</h2>
+                <p class="section-description">Ознакомьтесь с нашими последними работами и найдите вдохновение для вашего интерьера.</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="assets/images/7532cb754155.jpg" 
+                         alt="Современный диван в гостиной">
+                    <div class="gallery-overlay">
+                        <h4>Гостиная «Лофт»</h4>
+                        <span>Москва, 2025</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="assets/images/91cfbf0af332.jpg" 
+                         alt="Минималистичная спальня">
+                    <div class="gallery-overlay">
+                        <h4>Спальня «Белый сон»</h4>
+                        <span>Санкт-Петербург</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="assets/images/249ccf30a80a.jpg" 
+                         alt="Обеденная зона">
+                    <div class="gallery-overlay">
+                        <h4>Столовая «Тепло»</h4>
+                        <span>Казань</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="assets/images/b49f70b632a6.jpg" 
+                         alt="Уютное кресло">
+                    <div class="gallery-overlay">
+                        <h4>Кресло «Комфорт»</h4>
+                        <span>Коллекция Soft</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="assets/images/c47c647211e6.jpg" 
+                         alt="Современная кухня">
+                    <div class="gallery-overlay">
+                        <h4>Кухня «Модерн»</h4>
+                        <span>Индивидуальный проект</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Catalog Section -->
+    <section class="catalog" id="catalog">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-tag">Каталог</p>
+                <h2 class="section-title">Выберите категорию</h2>
+                <p class="section-description">Кухни, шкафы и мебель для гостиной — создано для вашего комфорта и стиля.</p>
+            </div>
+            <div class="catalog-grid">
+                <div class="catalog-card">
+                    <div class="catalog-card-image">
+                        <img src="assets/images/60bc234e3223.jpg" 
+                             alt="Современная белая кухня с островом">
+                        <span class="catalog-badge">Хит продаж</span>
+                    </div>
+                    <div class="catalog-card-content">
+                        <p class="catalog-category">Кухни</p>
+                        <h3>Кухня «Модерн Люкс»</h3>
+                        <p>Белая глянцевая кухня с островом. Фасады МДФ, столешница из искусственного камня. Встроенная техника.</p>
+                        <div class="catalog-footer">
+                            <div class="catalog-price">от 189 000 <span>₽</span></div>
+                            <a href="#" class="btn-catalog">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="catalog-card">
+                    <div class="catalog-card-image">
+                        <img src="assets/images/0ca0c0bb616e.jpg" 
+                             alt="Шкаф-купе с зеркальными дверями">
+                    </div>
+                    <div class="catalog-card-content">
+                        <p class="catalog-category">Шкафы</p>
+                        <h3>Шкаф-купе «Классика»</h3>
+                        <p>Трёхдверный шкаф-купе с зеркальными дверями и внутренним наполнением. Дуб натуральный.</p>
+                        <div class="catalog-footer">
+                            <div class="catalog-price">от 78 000 <span>₽</span></div>
+                            <a href="#" class="btn-catalog">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="catalog-card">
+                    <div class="catalog-card-image">
+                        <img src="assets/images/7532cb754155.jpg" 
+                             alt="Большой угловой диван в гостиной">
+                        <span class="catalog-badge">Новинка</span>
+                    </div>
+                    <div class="catalog-card-content">
+                        <p class="catalog-category">Гостиная</p>
+                        <h3>Диван «Комфорт Про»</h3>
+                        <p>Угловой диван с механизмом трансформации. Натуральная кожа, съёмные чехлы. Цвет на выбор.</p>
+                        <div class="catalog-footer">
+                            <div class="catalog-price">от 145 000 <span>₽</span></div>
+                            <a href="#" class="btn-catalog">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="catalog-card">
+                    <div class="catalog-card-image">
+                        <img src="assets/images/e32c6335b797.jpg" 
+                             alt="Бежевая современная кухня">
+                    </div>
+                    <div class="catalog-card-content">
+                        <p class="catalog-category">Кухни</p>
+                        <h3>Кухня «Скандинавия»</h3>
+                        <p>Минималистичная кухня в бежевых тонах. Массив ясеня, фурнитура Blum. Планировка на заказ.</p>
+                        <div class="catalog-footer">
+                            <div class="catalog-price">от 215 000 <span>₽</span></div>
+                            <a href="#" class="btn-catalog">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="catalog-card">
+                    <div class="catalog-card-image">
+                        <img src="assets/images/949c4184ef4b.jpg" 
+                             alt="Современный шкаф в прихожую">
+                    </div>
+                    <div class="catalog-card-content">
+                        <p class="catalog-category">Шкафы</p>
+                        <h3>Шкаф «Мини» в прихожую</h3>
+                        <p>Компактный шкаф с вешалкой и полками для обуви. Встроенная LED-подсветка. 4 цвета.</p>
+                        <div class="catalog-footer">
+                            <div class="catalog-price">от 42 000 <span>₽</span></div>
+                            <a href="#" class="btn-catalog">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="catalog-card">
+                    <div class="catalog-card-image">
+                        <img src="assets/images/1fdd92dfee74.jpg" 
+                             alt="Модульная гостиная с телевизором">
+                        <span class="catalog-badge">Акция</span>
+                    </div>
+                    <div class="catalog-card-content">
+                        <p class="catalog-category">Гостиная</p>
+                        <h3>Стенка «Медиа Холл»</h3>
+                        <p>Модульная стенка под ТВ с открытыми полками и закрытыми секциями. Комбинация дерева и стекла.</p>
+                        <div class="catalog-footer">
+                            <div class="catalog-price">от 98 000 <span>₽</span></div>
+                            <a href="#" class="btn-catalog">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section with Parallax -->
+    <section class="cta-section parallax-container" id="cta">
+        <div class="cta-bg parallax-bg" id="ctaBg">
+            <img src="assets/images/6292a4ce5cb1.jpg" 
+                 alt="Уютный интерьер с деревянной мебелью">
+        </div>
+        <div class="cta-overlay"></div>
+        <div class="container">
+            <div class="cta-content">
+                <p class="section-tag">Свяжитесь с нами</p>
+                <h2 class="section-title">Готовы создать мебель вашей мечты?</h2>
+                <p class="section-description">Запишитесь на бесплатную консультацию с нашим дизайнером. Мы поможем подобрать идеальное решение для вашего интерьера.</p>
+                <div class="cta-buttons">
+                    <a href="#" class="btn btn-primary">Записаться на консультацию</a>
+                    <a href="#" class="btn btn-outline">Смотреть каталог</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial Section -->
+    <section class="testimonial" id="testimonial">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-tag">Отзывы</p>
+                <h2 class="section-title">Что говорят наши клиенты</h2>
+            </div>
+            <div class="testimonial-card">
+                <img src="assets/images/ff4bc7eda865.jpg" 
+                     alt="Анна Смирнова">
+                <blockquote>«MIRO полностью преобразили нашу гостиную. Качество мебели превзошло все ожидания — теперь это самое любимое место в нашем доме.»</blockquote>
+                <p class="author">Анна Смирнова</p>
+                <p class="role">Дизайнер интерьеров</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-tag">Свяжитесь с нами</p>
+                <h2 class="section-title">Наши контакты</h2>
+                <p class="section-description">Приходите к нам в шоурум или оставьте заявку — мы перезвоним в течение 15 минут</p>
+            </div>
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <h3>Ждём вас в нашем шоуруме</h3>
+                    <p>Приглашаем посмотреть образцы мебели, проконсультироваться с дизайнером и выбрать идеальные решения для вашего интерьера.</p>
+                    
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-item-icon">
+                                <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            </div>
+                            <div class="contact-item-content">
+                                <h4>Адрес шоурума</h4>
+                                <p>Москва, ул. Арбат, д. 24, стр. 2<br>Метро «Арбатская», вход со двора</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-item-icon">
+                                <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            </div>
+                            <div class="contact-item-content">
+                                <h4>Телефоны</h4>
+                                <p><a href="tel:+74951234567">+7 (495) 123-45-67</a><br><a href="tel:+74959876543">+7 (495) 987-65-43</a></p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-item-icon">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </div>
+                            <div class="contact-item-content">
+                                <h4>Режим работы</h4>
+                                <p>Пн-Пт: с 10:00 до 20:00<br>Сб-Вс: с 11:00 до 18:00</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-item-icon">
+                                <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            </div>
+                            <div class="contact-item-content">
+                                <h4>Email</h4>
+                                <p><a href="mailto:hello@miro.ru">hello@miro.ru</a></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-map">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2245.357549!2d37.5897!3d55.7538!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTXCsDQ1JzE2LjEiTiAzN8KwMzUnMTYuNCJF!5e0!3m2!1sen!2s!4v1234567890" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="MIRO шоурум на карте"></iframe>
+                    </div>
+                </div>
+
+                <div class="contact-form-wrapper">
+                    <h3>Оставьте заявку</h3>
+                    <p>Заполните форму, и мы свяжемся с вами в ближайшее время</p>
+                    <form class="contact-form" id="contactForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Ваше имя</label>
+                                <input type="text" id="name" name="name" placeholder="Иван Петров" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Телефон</label>
+                                <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="ivan@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Сообщение</label>
+                            <textarea id="message" name="message" placeholder="Опишите ваш проект или задайте вопрос..."></textarea>
+                        </div>
+                        <div class="form-submit">
+                            <button type="submit" class="btn btn-primary">Отправить заявку</button>
+                        </div>
+                    </form>
+                    <div class="form-success" id="formSuccess">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+                        <h4>Заявка отправлена!</h4>
+                        <p>Мы свяжемся с вами в течение 15 минут</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo">MIRO</a>
+                    <p>Создаём современную мебель с 2010 года. Каждый предмет — результат работы талантливых мастеров и внимания к деталям.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="6" r="1"/></svg>
+                        </a>
+                        <a href="#" aria-label="Pinterest">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 6c-3 0-6 2.5-6 6 0 2 1 3.5 2.5 4-.3 1-1 3-1 3.5 0 .5.5.5 1 .3l3-2c2.5.5 4-1 4-3 0-3.5-3-6-6-6z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                        </a>
+                        <a href="#" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Каталог</h4>
+                    <ul>
+                        <li><a href="#catalog">Кухни</a></li>
+                        <li><a href="#catalog">Шкафы</a></li>
+                        <li><a href="#catalog">Гостиные</a></li>
+                        <li><a href="#catalog">Спальни</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Компания</h4>
+                    <ul>
+                        <li><a href="#">О нас</a></li>
+                        <li><a href="#">Производство</a></li>
+                        <li><a href="#">Проекты</a></li>
+                        <li><a href="#">Карьера</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Контакты</h4>
+                    <ul>
+                        <li><a href="tel:+74951234567">+7 (495) 123-45-67</a></li>
+                        <li><a href="mailto:hello@miro.ru">hello@miro.ru</a></li>
+                        <li><a href="#">Москва, ул. Арбат, 24</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 MIRO. Все права защищены.</p>
+                <div>
+                    <a href="#">Политика конфиденциальности</a>
+                    <span> • </span>
+                    <a href="#">Условия использования</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Header scroll effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileNav = document.getElementById('mobileNav');
+        const closeMenu = document.getElementById('closeMenu');
+
+        menuToggle.addEventListener('click', () => {
+            mobileNav.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeMenu.addEventListener('click', () => {
+            mobileNav.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        mobileNav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Parallax effect
+        const heroBg = document.getElementById('heroBg');
+        const ctaBg = document.getElementById('ctaBg');
+        const aboutBg = document.getElementById('aboutBg');
+
+        function parallax() {
+            const scrolled = window.pageYOffset;
+            const heroSection = document.getElementById('hero');
+            const ctaSection = document.getElementById('cta');
+            const aboutSection = document.getElementById('about');
+
+            if (heroSection) {
+                const heroRect = heroSection.getBoundingClientRect();
+                if (heroRect.bottom > 0) {
+                    heroBg.style.transform = `translateY(${scrolled * 0.5}px)`;
+                }
+            }
+
+            if (aboutSection) {
+                const aboutRect = aboutSection.getBoundingClientRect();
+                if (aboutRect.bottom > 0 && aboutRect.top < window.innerHeight) {
+                    const aboutOffset = aboutSection.offsetTop;
+                    const aboutScroll = scrolled - aboutOffset;
+                    aboutBg.style.transform = `translateY(${aboutScroll * 0.4}px)`;
+                }
+            }
+
+            if (ctaSection) {
+                const ctaRect = ctaSection.getBoundingClientRect();
+                if (ctaRect.bottom > 0 && ctaRect.top < window.innerHeight) {
+                    const progress = (window.innerHeight - ctaRect.top) / (window.innerHeight + ctaRect.height);
+                    ctaBg.style.transform = `translateY(${(progress - 0.5) * 100}px)`;
+                }
+            }
+
+            requestAnimationFrame(parallax);
+        }
+
+        parallax();
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.benefit-card, .gallery-item, .testimonial-card, .catalog-card, .contact-form-wrapper, .contact-info').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Parallax Gallery
+        const parallaxGallery = document.getElementById('parallaxGallery');
+        const galleryItems = parallaxGallery ? parallaxGallery.querySelectorAll('.parallax-gallery-item') : [];
+        const galleryPrev = document.getElementById('galleryPrev');
+        const galleryNext = document.getElementById('galleryNext');
+        const galleryProgressBar = document.getElementById('galleryProgressBar');
+        let currentGalleryIndex = 0;
+        let isScrolling = false;
+        let scrollTimeout;
+
+        function updateGallery(index) {
+            galleryItems.forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+                const bg = item.querySelector('.parallax-gallery-bg');
+                if (bg) {
+                    bg.style.transform = i === index ? 'translateY(0%)' : '';
+                }
+            });
+            if (galleryProgressBar) {
+                const progress = ((index + 1) / galleryItems.length) * 100;
+                galleryProgressBar.style.width = `${progress}%`;
+            }
+        }
+
+        function nextGallerySlide() {
+            if (isScrolling) return;
+            isScrolling = true;
+            currentGalleryIndex = (currentGalleryIndex + 1) % galleryItems.length;
+            updateGallery(currentGalleryIndex);
+            setTimeout(() => { isScrolling = false; }, 800);
+        }
+
+        function prevGallerySlide() {
+            if (isScrolling) return;
+            isScrolling = true;
+            currentGalleryIndex = (currentGalleryIndex - 1 + galleryItems.length) % galleryItems.length;
+            updateGallery(currentGalleryIndex);
+            setTimeout(() => { isScrolling = false; }, 800);
+        }
+
+        if (galleryNext) galleryNext.addEventListener('click', nextGallerySlide);
+        if (galleryPrev) galleryPrev.addEventListener('click', prevGallerySlide);
+
+        // Scroll-based gallery navigation
+        function handleGalleryScroll() {
+            if (!parallaxGallery) return;
+            
+            const rect = parallaxGallery.getBoundingClientRect();
+            const galleryHeight = parallaxGallery.offsetHeight;
+            const viewportHeight = window.innerHeight;
+            
+            if (rect.top <= 0 && rect.bottom >= viewportHeight) {
+                const scrollProgress = Math.abs(rect.top) / (galleryHeight - viewportHeight);
+                const itemCount = galleryItems.length;
+                const newIndex = Math.min(Math.floor(scrollProgress * itemCount), itemCount - 1);
+                
+                if (newIndex !== currentGalleryIndex && !isScrolling) {
+                    currentGalleryIndex = newIndex;
+                    updateGallery(currentGalleryIndex);
+                }
+            }
+        }
+
+        // Parallax effect for gallery backgrounds
+        function parallaxGalleryImages() {
+            if (!parallaxGallery) return;
+            
+            const scrolled = window.pageYOffset;
+            const galleryRect = parallaxGallery.getBoundingClientRect();
+            
+            galleryItems.forEach((item, index) => {
+                const bg = item.querySelector('.parallax-gallery-bg');
+                if (!bg) return;
+                
+                const itemRect = item.getBoundingClientRect();
+                const isActive = item.classList.contains('active');
+                
+                if (itemRect.top < window.innerHeight && itemRect.bottom > 0) {
+                    const progress = (window.innerHeight - itemRect.top) / (window.innerHeight + itemRect.height);
+                    const offset = (progress - 0.5) * 80;
+                    bg.style.transform = `translateY(${offset}px)`;
+                }
+            });
+        }
+
+        window.addEventListener('scroll', () => {
+            handleGalleryScroll();
+            parallaxGalleryImages();
+        }, { passive: true });
+
+        // Touch support for mobile
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        if (parallaxGallery) {
+            parallaxGallery.addEventListener('touchstart', (e) => {
+                touchStartY = e.changedTouches[0].screenY;
+            }, { passive: true });
+
+            parallaxGallery.addEventListener('touchend', (e) => {
+                touchEndY = e.changedTouches[0].screenY;
+                if (touchStartY - touchEndY > 50) {
+                    nextGallerySlide();
+                } else if (touchEndY - touchStartY > 50) {
+                    prevGallerySlide();
+                }
+            }, { passive: true });
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                const galleryRect = parallaxGallery ? parallaxGallery.getBoundingClientRect() : null;
+                if (galleryRect && galleryRect.top < window.innerHeight && galleryRect.bottom > 0) {
+                    nextGallerySlide();
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                const galleryRect = parallaxGallery ? parallaxGallery.getBoundingClientRect() : null;
+                if (galleryRect && galleryRect.top < window.innerHeight && galleryRect.bottom > 0) {
+                    prevGallerySlide();
+                }
+            }
+        });
+
+        // Initial setup
+        updateGallery(0);
+
+        // Contact Form
+        const contactForm = document.getElementById('contactForm');
+        const formSuccess = document.getElementById('formSuccess');
+
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(contactForm);
+                const data = Object.fromEntries(formData.entries());
+                
+                console.log('Form submitted:', data);
+                
+                contactForm.style.display = 'none';
+                formSuccess.classList.add('show');
+                
+                setTimeout(() => {
+                    contactForm.style.display = 'flex';
+                    formSuccess.classList.remove('show');
+                    contactForm.reset();
+                }, 5000);
+            });
+
+            // Phone mask
+            const phoneInput = document.getElementById('phone');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length > 0) {
+                        if (value[0] === '7' || value[0] === '8') {
+                            value = value.substring(1);
+                        }
+                        let formatted = '+7';
+                        if (value.length > 0) formatted += ' (' + value.substring(0, 3);
+                        if (value.length > 3) formatted += ') ' + value.substring(3, 6);
+                        if (value.length > 6) formatted += '-' + value.substring(6, 8);
+                        if (value.length > 8) formatted += '-' + value.substring(8, 10);
+                        e.target.value = formatted;
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
